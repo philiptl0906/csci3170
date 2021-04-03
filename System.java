@@ -90,7 +90,7 @@ public class System {
     con.close();
   }
 
-  // **** doing ******
+  // **** not test ******
   private static void insertData(Scanner keyboard) throws Exception {
     // if all data is sucessfully loaded, then this variable remains true.If not
     // then false.
@@ -107,10 +107,11 @@ public class System {
       Scanner inputStream = new Scanner(file);
       while (inputStream.hasNext()) {
         String data = inputStream.nextLine();
-        String[] values = data.split(",");
-        int seats = Integer.parseInt(values[2]);
-        try (PreparedStatement insert = con.prepareStatement(
-            "INSERT INTO Vehicle VALUES ('" + values[0] + "', '" + values[1] + "', " + seats + ");")) {
+        String[] values = data.split("|");
+        int unit_price = Integer.parseInt(values[2]);
+        int no_of_copies = Integer.parseInt(values[3]);
+        try (PreparedStatement insert = con.prepareStatement("INSERT INTO book VALUES ('" + values[0] + "', '"
+            + values[1] + "', " + unit_price + "," + no_of_copies + ");")) {
           insert.executeUpdate();
           insert.close();
         } catch (SQLException e) {
@@ -128,17 +129,15 @@ public class System {
       success = false;
     }
 
-    filename = path + "/drivers.csv";
+    filename = path + "/customer.txt";
     file = new File(filename);
     try {
       Scanner inputStream = new Scanner(file);
       while (inputStream.hasNext()) {
         String data = inputStream.nextLine();
-        String[] values = data.split(",");
-        int id = Integer.parseInt(values[0]);
-        int drivingYears = Integer.parseInt(values[3]);
-        try (PreparedStatement insert = con.prepareStatement("INSERT INTO Driver VALUES (" + id + ", '" + values[1]
-            + "', '" + values[2] + "', " + drivingYears + ");")) {
+        String[] values = data.split("|");
+        try (PreparedStatement insert = con.prepareStatement("INSERT INTO customer VALUES ('" + values[0] + "', '"
+            + values[1] + "', '" + values[2] + "', '" + values[3] + "');")) {
           insert.executeUpdate();
           insert.close();
         } catch (SQLException e) {
@@ -157,76 +156,71 @@ public class System {
       success = false;
     }
 
-    filename = path + "/passengers.csv";
+    filename = path + "/orders.txt";
     file = new File(filename);
     try {
       Scanner inputStream = new Scanner(file);
       while (inputStream.hasNext()) {
         String data = inputStream.nextLine();
-        String[] values = data.split(",");
-        int id = Integer.parseInt(values[0]);
+        String[] values = data.split("|");
+        int charge = Integer.parseInt(values[3]);
+        try (PreparedStatement insert = con.prepareStatement("INSERT INTO orders VALUES ('" + values[0] + "', '"
+            + values[1] + "', '" + values[2] + "', " + charge + ", '" + values[3] + "');")) {
+          insert.executeUpdate();
+          insert.close();
+        } catch (SQLException e) {
+          System.out.println("SQLException: " + e.getMessage());
+          System.out.println("SQLState: " + e.getSQLState());
+          System.out.println("VendorError: " + e.getErrorCode());
+
+          success = false;
+        } finally {
+          // System.out.print("\rProcessing... ");
+        }
+      }
+      inputStream.close();
+    } catch (FileNotFoundException e) {
+      System.out.println(e);
+      success = false;
+    }
+
+    filename = path + "/ordering.txt";
+    file = new File(filename);
+    try {
+      Scanner inputStream = new Scanner(file);
+      while (inputStream.hasNext()) {
+        String data = inputStream.nextLine();
+        String[] values = data.split("|");
+        int quantity = Integer.parseInt(values[2]);
+        try (PreparedStatement insert = con.prepareStatement(
+            "INSERT INTO ordering VALUES ('" + values[0] + "', '" + values[1] + "', " + quantity + ");")) {
+          insert.executeUpdate();
+          insert.close();
+        } catch (SQLException e) {
+          System.out.println("SQLException: " + e.getMessage());
+          System.out.println("SQLState: " + e.getSQLState());
+          System.out.println("VendorError: " + e.getErrorCode());
+
+          success = false;
+        } finally {
+          // System.out.print("\rProcessing... ");
+        }
+      }
+      inputStream.close();
+    } catch (FileNotFoundException e) {
+      System.out.println(e);
+      success = false;
+    }
+
+    filename = path + "/book_author.txt";
+    file = new File(filename);
+    try {
+      Scanner inputStream = new Scanner(file);
+      while (inputStream.hasNext()) {
+        String data = inputStream.nextLine();
+        String[] values = data.split("|");
         try (PreparedStatement insert = con
-            .prepareStatement("INSERT INTO Passenger VALUES (" + id + ", '" + values[1] + "');")) {
-          insert.executeUpdate();
-          insert.close();
-        } catch (SQLException e) {
-          System.out.println("SQLException: " + e.getMessage());
-          System.out.println("SQLState: " + e.getSQLState());
-          System.out.println("VendorError: " + e.getErrorCode());
-
-          success = false;
-        } finally {
-          // System.out.print("\rProcessing... ");
-        }
-      }
-      inputStream.close();
-    } catch (FileNotFoundException e) {
-      System.out.println(e);
-      success = false;
-    }
-
-    filename = path + "/taxi_stops.csv";
-    file = new File(filename);
-    try {
-      Scanner inputStream = new Scanner(file);
-      while (inputStream.hasNext()) {
-        String data = inputStream.nextLine();
-        String[] values = data.split(",");
-        int location_x = Integer.parseInt(values[1]);
-        int location_y = Integer.parseInt(values[2]);
-        try (PreparedStatement insert = con.prepareStatement(
-            "INSERT INTO Taxi_Stop VALUES ('" + values[0] + "', " + location_x + ", " + location_y + ");")) {
-          insert.executeUpdate();
-          insert.close();
-        } catch (SQLException e) {
-          System.out.println("SQLException: " + e.getMessage());
-          System.out.println("SQLState: " + e.getSQLState());
-          System.out.println("VendorError: " + e.getErrorCode());
-
-          success = false;
-        } finally {
-          // System.out.print("\rProcessing... ");
-        }
-      }
-      inputStream.close();
-    } catch (FileNotFoundException e) {
-      System.out.println(e);
-      success = false;
-    }
-
-    filename = path + "/trips.csv";
-    file = new File(filename);
-    try {
-      Scanner inputStream = new Scanner(file);
-      while (inputStream.hasNext()) {
-        String data = inputStream.nextLine();
-        String[] values = data.split(",");
-        int tid = Integer.parseInt(values[0]);
-        int did = Integer.parseInt(values[1]);
-        int pid = Integer.parseInt(values[2]);
-        int fee = Integer.parseInt(values[7]);
-        try (PreparedStatement insert = con.prepareStatement("INSERT INTO Trip VALUES (" + tid + ", " + did + ", " + pid
-            + ", '" + values[3] + "', '" + values[4] + "', '" + values[5] + "', '" + values[6] + "', " + fee + ");")) {
+            .prepareStatement("INSERT INTO book_author VALUES ('" + values[0] + "', '" + values[1] + "');")) {
           insert.executeUpdate();
           insert.close();
         } catch (SQLException e) {
@@ -249,9 +243,11 @@ public class System {
       System.out.print("Data is loaded!\n");
   }
 
-  private static void setDate() throws Exception {
-    System.out.println("Numbers of record in each table: ");
-
+  // **** doing ******
+  private static void setDate(Scanner keyboard) throws Exception {
+    System.out.println("Please Input the date (YYYYMMDD): ");
+    String date = keyboard.next();
+    int year = 0;
     String[] checkTables = { "Vehicle", "Passenger", "Driver", "Trip", "Request", "Taxi_Stop" };
     Connection con = LoadServer.connect();
     Statement stmt = null;
