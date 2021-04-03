@@ -55,10 +55,10 @@ public class Main {
         System.out.println("The system date is now: 0000-00-00");
         System.out.println("<This is the book ordering system.>");
         System.out.println("----------------------------------");
-        System.out.println("2. A passenger");
-        System.out.println("3. A driver");
-        System.out.println("4. A manager");
-        System.out.println("5. None of the above");
-        System.out.println("Please enter [1-4]");
+        System.out.println("1. System interface");
+        System.out.println("2. Customer interface");
+        System.out.println("3. Bookstore interface");
+        System.out.println("4. Show system date");
+        System.out.println("5. Quit the system");
     }
 }
