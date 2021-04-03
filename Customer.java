@@ -7,6 +7,7 @@ public class Customer {
   public static void service(Scanner keyboard) throws Exception {
 
     // Scanner keyboard = new Scanner(System.in);
+    //Hello
 
     services: while (true) {
       System.out.println("<This is the customer interface.>");
