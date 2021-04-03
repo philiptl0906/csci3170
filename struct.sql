@@ -1,7 +1,7 @@
 DROP DATABASE IF EXISTS project;
 CREATE DATABASE project;
 USE project;
-//
+
 DROP TABLE IF EXISTS book
 CASCADE;
 DROP TABLE IF EXISTS customer
@@ -15,52 +15,44 @@ CASCADE;
 
 CREATE TABLE book
 (
-    id integer primary key,
-    loan_period integer not null,
-    max_books integer not null
+    ISBN varchar(13) PRIMARY KEY,
+    title varchar(100) NOT NULL,
+    unit_price integer NOT NULL CHECK(unit_price>=0),
+    no_of_copies integer NOT NULL CHECK(no_of_copies>=0)
 );
 
 CREATE TABLE customer
 (
-    user_id varchar(10) primary key,
-    name varchar(25) not null,
-    address varchar(100) not null,
-    category_id integer not null,
-    FOREIGN KEY(category_id) REFERENCES category(id)
+    customer_id varchar(10) PRIMARY KEY,
+    name varchar(50) NOT NULL,
+    shipping_address varchar(200) NOT NULL,
+    credit_card_no varchar(19) NOT NULL
 );
 
-CREATE TABLE book
+CREATE TABLE orders
 (
-    call_number varchar(8) primary key,
-    title varchar(30) not null,
-    publish_date varchar(10) not null
+    order_id varchar(8) PRIMARY KEY,
+    o_date DATE NOT NULL,
+    shipping_status varchar(1) NOT NULL,
+    charge integer NOT NULL CHECK(unit_price>=0),
+    customer_id varchar(10) NOT NULL
 );
 
-CREATE TABLE copy
+CREATE TABLE ordering
 (
-    call_number integer not null,
-    copy_number integer not null,
-    PRIMARY KEY(call_number, copy_number),
-    FOREIGN KEY(call_number) REFERENCES book(call_number)
-);
-
-CREATE TABLE checkout_record
-(
-    user_id varchar(10) not null,
-    call_number varchar(8) not null,
-    copy_number integer not null,
-    checkout_date varchar(10) not null,
-    return_date varchar(10),
-    PRIMARY KEY(user_id, call_number, copy_number, checkout_date),
-    FOREIGN KEY(user_id) REFERENCES user(user_id),
+    order_id varchar(8) NOT NULL,
+    ISBN varchar(13) NOT NULL,
+    quantity integer NOT NULL,
+    PRIMARY KEY(order_id, ISBN),
+    FOREIGN KEY(order_id) REFERENCES orders(order_id),
     FOREIGN KEY(call_number, copy_number) REFERENCES copy(call_number, copy_number)
 );
 
-CREATE TABLE author
+CREATE TABLE book_author
 (
-    name varchar(25) not null,
-    call_number varchar(8) not null,
-    PRIMARY KEY(name, call_number),
-    FOREIGN KEY(call_number) REFERENCES book(call_number)
+    ISBN varchar(13) NOT NULL,
+    author_name varchar(50) NOT NULL,
+    PRIMARY KEY(ISBN, author_name),
+    FOREIGN KEY(ISBN) REFERENCES book(ISBN)
 );
 
