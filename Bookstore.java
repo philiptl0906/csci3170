@@ -100,7 +100,9 @@ public class Bookstore{
                             resultSet = stmt.executeQuery();
                         System.out.print("Update shiping status");
                         }catch(SQLException e){
-                             System.out.println("SQL error!!");
+                            System.out.println("SQLException: " + e.getMessage());
+                            System.out.println("SQLState: " + e.getSQLState());
+                            System.out.println("VendorError: " + e.getErrorCode());
                         }
                         break;
                         }else if(userin == 'N'){
@@ -119,7 +121,9 @@ public class Bookstore{
             
 
         }catch(SQLException e){
-                System.out.println("SQL error!!");
+                System.out.println("SQLException: " + e.getMessage());
+                System.out.println("SQLState: " + e.getSQLState());
+                System.out.println("VendorError: " + e.getErrorCode());
 
         }finally{
             if(stmt != null){
