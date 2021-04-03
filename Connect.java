@@ -1,6 +1,6 @@
 import java.sql.*;
 
-public class connect{
+public class Connect{
     public static Connection connect(){
         String dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/";// uncomplete address, need change later
         String dbUsername = "Group19";
