@@ -13,7 +13,7 @@ public class Bookstore{
             System.out.println("3. N most Popular Book Query.");
             System.out.println("4. Back to main menu");
             System.out.println(" ");
-            System.out.println("What is your choice??..");
+            System.out.print("What is your choice??..");
             
             try {
                 input = in.nextInt();
@@ -45,7 +45,11 @@ public class Bookstore{
     }
 
     private static void OrUpdate(){
-
+        int input = 0
+        System.out.print("Please enter the OrderID that you want to change: ");
+        try{
+            
+        }
     }
 
     private static void OrQuery(){
