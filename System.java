@@ -49,13 +49,12 @@ public class System {
 
   private static void createTable() throws Exception {
 
-    String[] createTable = {
-        "CREATE TABLE IF NOT EXISTS Passenger(PID integer PRIMARY KEY, Pname varchar(30) NOT NULL)",
-        "CREATE TABLE IF NOT EXISTS Vehicle(VID varchar(6) PRIMARY KEY, Model varchar(30) NOT NULL, Seats integer NOT NULL);",
-        "CREATE TABLE IF NOT EXISTS Driver(DID integer PRIMARY KEY, Dname varchar(30) NOT NULL, VID varchar(6) NOT NULL, Driving_years integer, FOREIGN KEY (VID) REFERENCES Vehicle(VID));",
-        "CREATE TABLE IF NOT EXISTS Taxi_Stop(Tname varchar(20) PRIMARY KEY, Location_x integer NOT NULL, Location_y integer NOT NULL);",
-        "CREATE TABLE IF NOT EXISTS Trip(TID integer PRIMARY KEY AUTO_INCREMENT, DID integer NOT NULL, PID integer NOT NULL, Start_time datetime NOT NULL, End_time datetime, Start_location varchar(20) NOT NULL, Destination varchar(20) NOT NULL, Fee integer NOT NULL,  FOREIGN KEY (DID) REFERENCES Driver(DID), FOREIGN KEY (PID) REFERENCES Passenger(PID));",
-        "CREATE TABLE IF NOT EXISTS Request(RID integer PRIMARY KEY AUTO_INCREMENT, PID integer NOT NULL, Start_location varchar(20) NOT NULL, Destination varchar(20) NOT NULL, Model varchar(30) NOT NULL, Passengers integer NOT NULL, Taken varchar(1) NOT NULL, Driving_years integer NOT NULL, FOREIGN KEY (PID) REFERENCES Passenger(PID));" };
+    String[] createTables = {
+        "CREATE TABLE IF NOT EXISTS book(ISBN varchar(13) PRIMARY KEY, title varchar(100) NOT NULL, unit_price integer NOT NULL, no_of_copies integer NOT NULL, CHECK(unit_price>=0 AND no_of_copies>=0));",
+        "CREATE TABLE IF NOT EXISTS customer(customer_id varchar(10) PRIMARY KEY, name varchar(50) NOT NULL, shipping_address varchar(200) NOT NULL, credit_card_no varchar(19) NOT NULL);",
+        "CREATE TABLE IF NOT EXISTS orders(order_id varchar(8) PRIMARY KEY, o_date DATE NOT NULL, shipping_status varchar(1) NOT NULL, charge integer NOT NULL, customer_id varchar(10) NOT NULL, CHECK(charge>=0));",
+        "CREATE TABLE IF NOT EXISTS ordering(order_id varchar(8) NOT NULL, ISBN varchar(13) NOT NULL, quantity integer NOT NULL, CHECK(quantity>=0), PRIMARY KEY(order_id, ISBN), FOREIGN KEY(order_id) REFERENCES orders(order_id), FOREIGN KEY(call_number, copy_number) REFERENCES copy(call_number, copy_number));",
+        "CREATE TABLE IF NOT EXISTS book_author(ISBN varchar(13) NOT NULL, author_name varchar(50) NOT NULL, PRIMARY KEY(ISBN, author_name), FOREIGN KEY(ISBN) REFERENCES book(ISBN));" };
     Connection con = LoadServer.connect();
     System.out.print("Processing...");
     for (int i = 0; i < createTables.length; i++) {
@@ -68,13 +67,13 @@ public class System {
       } finally {
       }
     }
-    System.out.print("Done! Tables are created!\n");
+    System.out.print("Success! Tables are created.\n");
     con.close();
 
   }
 
   private static void deleteTable() throws Exception {
-    String[] deleteTables = { "Request", "Trip", "Driver", "Taxi_Stop", "Vehicle", "Passenger" };
+    String[] deleteTables = { "book", "cusomter", "orders", "ordering", "book_author" };
     Connection con = LoadServer.connect();
     System.out.print("\rProcessing...");
     for (int i = 0; i < deleteTables.length; i++) {
@@ -91,6 +90,7 @@ public class System {
     con.close();
   }
 
+  // **** doing ******
   private static void insertData(Scanner keyboard) throws Exception {
     // if all data is sucessfully loaded, then this variable remains true.If not
     // then false.
@@ -101,7 +101,7 @@ public class System {
     String path = keyboard.next();
 
     System.out.print("Processing... ");
-    String filename = path + "/vehicles.csv";
+    String filename = path + "/book.txt";
     File file = new File(filename);
     try {
       Scanner inputStream = new Scanner(file);
