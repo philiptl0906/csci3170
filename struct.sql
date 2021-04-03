@@ -6,8 +6,6 @@ DROP TABLE IF EXISTS book
 CASCADE;
 DROP TABLE IF EXISTS customer
 CASCADE;
-DROP TABLE IF EXISTS book
-CASCADE;
 DROP TABLE IF EXISTS orders
 CASCADE;
 DROP TABLE IF EXISTS ordering
@@ -15,14 +13,14 @@ CASCADE;
 DROP TABLE IF EXISTS book_author
 CASCADE;
 
-CREATE TABLE category
+CREATE TABLE book
 (
     id integer primary key,
     loan_period integer not null,
     max_books integer not null
 );
 
-CREATE TABLE user
+CREATE TABLE customer
 (
     user_id varchar(10) primary key,
     name varchar(25) not null,
