@@ -1,7 +1,7 @@
 DROP DATABASE IF EXISTS project;
 CREATE DATABASE project;
 USE project;
-
+//
 DROP TABLE IF EXISTS book
 CASCADE;
 DROP TABLE IF EXISTS customer
