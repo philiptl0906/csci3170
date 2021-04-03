@@ -4,8 +4,9 @@ import java.io.*;
     // test
 public class Bookstore{
     public static void run(Scanner in){
-        int input= 0;
+        
         run: while(true){
+            int input= 0;
             System.out.println("----------------------------------");
             System.out.println("1. Order Update.");
             System.out.println("2. Order Query.");
