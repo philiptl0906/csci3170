@@ -9,13 +9,14 @@ public class System {
     // Scanner keyboard = new Scanner(System.in);
 
     services: while (true) {
-      System.out.println("Administrator, what would you like to do?");
-      System.out.println("1. Create tables");
-      System.out.println("2. Delete tables");
-      System.out.println("3. Load data");
-      System.out.println("4. Check data");
-      System.out.println("5. Go back");
-      System.out.println("Please enter [1-5]");
+      System.out.println("<This is the system interface.>");
+      System.out.println("-------------------------------");
+      System.out.println("1. Create Table.");
+      System.out.println("2. Delete Table.");
+      System.out.println("3. Insert Data.");
+      System.out.println("4. Set System Date.");
+      System.out.println("5. Back to main menu.\n");
+      System.out.println("Please enter your choice??..");
       
       int input = 0;
       try {
@@ -25,30 +26,30 @@ public class System {
       } finally {
         switch (input) {
           case 1: 
-            createTables();
+            createTable();
             break;
           case 2: 
-            deleteTables();
+            deleteTable();
             break;
           case 3: 
-            loadData(keyboard);
+            insertData(keyboard);
             break;
           case 4: 
-            checkData();
+            setDate();
             break;
           case 5: 
             break services;
           default: 
-            System.out.println("[ERROR] Invalid input.");
+            System.out.println("[ERROR] Invalid input. Please input [1-5].");
             break;
         }
       }
     }
   }
   
-	private static void createTables() throws Exception {
+	private static void createTable() throws Exception {
 
-    String[] createTables = { "CREATE TABLE IF NOT EXISTS Passenger(PID integer PRIMARY KEY, Pname varchar(30) NOT NULL)",
+    String[] createTable = { "CREATE TABLE IF NOT EXISTS Passenger(PID integer PRIMARY KEY, Pname varchar(30) NOT NULL)",
       "CREATE TABLE IF NOT EXISTS Vehicle(VID varchar(6) PRIMARY KEY, Model varchar(30) NOT NULL, Seats integer NOT NULL);",
       "CREATE TABLE IF NOT EXISTS Driver(DID integer PRIMARY KEY, Dname varchar(30) NOT NULL, VID varchar(6) NOT NULL, Driving_years integer, FOREIGN KEY (VID) REFERENCES Vehicle(VID));",
       "CREATE TABLE IF NOT EXISTS Taxi_Stop(Tname varchar(20) PRIMARY KEY, Location_x integer NOT NULL, Location_y integer NOT NULL);",
@@ -72,7 +73,7 @@ public class System {
 
   }
   
-  private static void deleteTables() throws Exception {
+  private static void deleteTable() throws Exception {
     String[] deleteTables = { "Request", "Trip", "Driver", "Taxi_Stop", "Vehicle", "Passenger"};
     Connection con = LoadServer.connect();
     System.out.print("\rProcessing...");
@@ -90,7 +91,7 @@ public class System {
     con.close();
   }
   
-  private static void loadData(Scanner keyboard) throws Exception {
+  private static void setDate(Scanner keyboard) throws Exception {
     //if all data is sucessfully loaded, then this variable remains true.If not then false.
     boolean success = true;
 
