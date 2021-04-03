@@ -2,23 +2,19 @@ DROP DATABASE IF EXISTS project;
 CREATE DATABASE project;
 USE project;
 
-DROP TABLE IF EXISTS book
-CASCADE;
-DROP TABLE IF EXISTS customer
-CASCADE;
-DROP TABLE IF EXISTS orders
-CASCADE;
-DROP TABLE IF EXISTS ordering
-CASCADE;
-DROP TABLE IF EXISTS book_author
-CASCADE;
+DROP TABLE IF EXISTS book;
+DROP TABLE IF EXISTS customer;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS ordering;
+DROP TABLE IF EXISTS book_author;
 
 CREATE TABLE book
 (
     ISBN varchar(13) PRIMARY KEY,
     title varchar(100) NOT NULL,
-    unit_price integer NOT NULL CHECK(unit_price>=0),
-    no_of_copies integer NOT NULL CHECK(no_of_copies>=0)
+    unit_price integer NOT NULL,
+    no_of_copies integer NOT NULL,
+    CHECK(unit_price>=0 AND no_of_copies>=0)
 );
 
 CREATE TABLE customer
@@ -34,8 +30,9 @@ CREATE TABLE orders
     order_id varchar(8) PRIMARY KEY,
     o_date DATE NOT NULL,
     shipping_status varchar(1) NOT NULL,
-    charge integer NOT NULL CHECK(unit_price>=0),
-    customer_id varchar(10) NOT NULL
+    charge integer NOT NULL,
+    customer_id varchar(10) NOT NULL,
+    CHECK(unit_price>=0 AND charge>=0)
 );
 
 CREATE TABLE ordering
