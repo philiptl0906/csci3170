@@ -9,13 +9,13 @@ public class Customer {
     // Scanner keyboard = new Scanner(System.in);
 
     services: while (true) {
-      System.out.println("Administrator, what would you like to do?");
-      System.out.println("1. Create tables");
-      System.out.println("2. Delete tables");
-      System.out.println("3. Load data");
-      System.out.println("4. Check data");
-      System.out.println("5. Go back");
-      System.out.println("Please enter [1-5]");
+      System.out.println("<This is the customer interface.>");
+      System.out.println("1. Book Search");
+      System.out.println("2. Order Creation");
+      System.out.println("3. Order Altering");
+      System.out.println("4. Order Query");
+      System.out.println("5. Back to main menu");
+      System.out.println("What is your choice??..");
       
       int input = 0;
       try {
@@ -25,16 +25,16 @@ public class Customer {
       } finally {
         switch (input) {
           case 1: 
-            createTables();
+            bookSearch();
             break;
           case 2: 
-            deleteTables();
+            orderCreation();
             break;
           case 3: 
-            loadData(keyboard);
+            orderAltering();
             break;
           case 4: 
-            checkData();
+            orderQuery();
             break;
           case 5: 
             break services;
@@ -46,7 +46,7 @@ public class Customer {
     }
   }
   
-	private static void createTables() throws Exception {
+	private static bookSearch() throws Exception {
 
     String[] createTables = { "CREATE TABLE IF NOT EXISTS Passenger(PID integer PRIMARY KEY, Pname varchar(30) NOT NULL)",
       "CREATE TABLE IF NOT EXISTS Vehicle(VID varchar(6) PRIMARY KEY, Model varchar(30) NOT NULL, Seats integer NOT NULL);",
