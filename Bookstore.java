@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 import java.sql.*;
 
-    // test
+    // not tested
 public class Bookstore{
     public static void run(Scanner in){
         
@@ -18,6 +18,7 @@ public class Bookstore{
             
             try {
                 input = in.nextInt();
+                System.out.println("");
             }
 
             catch(Exception e){
@@ -30,7 +31,7 @@ public class Bookstore{
                         OrUpdate(in);
                         break;
                     case 2:
-                        OrQuery();
+                        OrQuery(in);
                         break;
                     case 3: 
                         Npop();
@@ -44,7 +45,7 @@ public class Bookstore{
             }   
         }
     }
-
+//not tested
     private static void OrUpdate(Scanner in){
         int input = 0;
         System.out.print("Please enter the order ID: ");
@@ -150,9 +151,67 @@ public class Bookstore{
             }
         }    
     }
+//not tested
+    private static void OrQuery(Scanner in){
+        String input = '';
+        System.out.print("Please input the Month for Order Query (e.g.2005-09): ");
+        input = in.nextLine();
+        if(input.matchs("\\d{4}-\\d{2}")){
+            String psql = "SELECT * FROM orders WHERE shipping_status = 'Y', o_date REGEXP '^%s'";
+            String aUserInputODate = input;
+            String sql = String.format(psql, aUserInputODate);
+            Connection con = Connect.connect();
+            try{
+                Statement stmt = con.createStatement(sql);
+                ResultSet resultSet = stmt.executeQuery();
+                int i=1;
+                int total = 0;
+                while(resultSet.next()){
+                    System.out.println("");
+                    System.out.println("");
+                    System.out.println("Record : " + i);
+                    System.out.println("order_id : " + resultSet.getString("order_id"));
+                    System.out.println("customer_id : " + resultSet.getString("customer_id"));
+                    System.out.println("date : "+ resultSet.getDate("o_date"));
+                    System.out,println("chage : "+ resultSet.getInt("charge"));
+                    total += resultSet.getInt("charge");
+                }catch(SQLException e){
+                    System.out.println("SQLException: " + e.getMessage());
+                    System.out.println("SQLState: " + e.getSQLState());
+                    System.out.println("VendorError: " + e.getErrorCode());
+                }finally{
+                    System.out.println("");
+                    System.out.println("");
+                    System.out.println("Total charges of the month is "+ total);
+                     if(stmt != null){
+                        try{
+                            stmt.close();
+                        }catch(SQLException e){
+                            stmt= null;
+                        }
+                    }
+                    if(resultSet != null){
+                        try{
+                            resultSet.close();
+                        }catch(SQLException e){
+                            resultSet = null;
+                        }
 
-    private static void OrQuery(){
+                    }
+                }
+            }
+            if(con != null){
+            try{
+                con.close();
+            }catch(SQLException e){
+                con = null;
+            }
+        }
 
+        }else{
+            System.out.printlf("Invalid input !!");
+        }
+        
     }
 
     private static void Npop(){
