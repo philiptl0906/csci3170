@@ -32,7 +32,7 @@ CREATE TABLE orders
     shipping_status varchar(1) NOT NULL,
     charge integer NOT NULL,
     customer_id varchar(10) NOT NULL,
-    CHECK(unit_price>=0 AND charge>=0)
+    CHECK(charge>=0)
 );
 
 CREATE TABLE ordering
@@ -40,6 +40,7 @@ CREATE TABLE ordering
     order_id varchar(8) NOT NULL,
     ISBN varchar(13) NOT NULL,
     quantity integer NOT NULL,
+    CHECK(quantity>=0),
     PRIMARY KEY(order_id, ISBN),
     FOREIGN KEY(order_id) REFERENCES orders(order_id),
     FOREIGN KEY(call_number, copy_number) REFERENCES copy(call_number, copy_number)
