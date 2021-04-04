@@ -6,11 +6,9 @@ import java.util.Date;
 
 public class System {
 
-  public static void service(Scanner keyboard) throws Exception {
+  public static void run(Scanner in) throws Exception {
 
-    // Scanner keyboard = new Scanner(System.in);
-    // help
-    services: while (true) {
+    run: while (true) {
       System.out.println("<This is the system interface.>");
       System.out.println("-------------------------------");
       System.out.println("1. Create Table.");
@@ -22,9 +20,9 @@ public class System {
 
       int input = 0;
       try {
-        input = keyboard.nextInt();
+        input = in.nextInt();
       } catch (Exception e) {
-        keyboard.next();
+        in.next();
       } finally {
         switch (input) {
           case 1:
@@ -34,13 +32,13 @@ public class System {
             deleteTable();
             break;
           case 3:
-            insertData(keyboard);
+            insertData(in);
             break;
           case 4:
-            setDate();
+            setDate(in);
             break;
           case 5:
-            break services;
+            break run;
           default:
             System.out.println("[ERROR] Invalid input. Please input [1-5].");
             break;
@@ -55,7 +53,7 @@ public class System {
         "CREATE TABLE IF NOT EXISTS book(ISBN varchar(13) PRIMARY KEY, title varchar(100) NOT NULL, unit_price integer NOT NULL, no_of_copies integer NOT NULL, CHECK(unit_price>=0 AND no_of_copies>=0));",
         "CREATE TABLE IF NOT EXISTS customer(customer_id varchar(10) PRIMARY KEY, name varchar(50) NOT NULL, shipping_address varchar(200) NOT NULL, credit_card_no varchar(19) NOT NULL);",
         "CREATE TABLE IF NOT EXISTS orders(order_id varchar(8) PRIMARY KEY, o_date DATE NOT NULL, shipping_status varchar(1) NOT NULL, charge integer NOT NULL, customer_id varchar(10) NOT NULL, CHECK(charge>=0));",
-        "CREATE TABLE IF NOT EXISTS ordering(order_id varchar(8) NOT NULL, ISBN varchar(13) NOT NULL, quantity integer NOT NULL, CHECK(quantity>=0), PRIMARY KEY(order_id, ISBN), FOREIGN KEY(order_id) REFERENCES orders(order_id), FOREIGN KEY(call_number, copy_number) REFERENCES copy(call_number, copy_number));",
+        "CREATE TABLE IF NOT EXISTS ordering(order_id varchar(8) NOT NULL, ISBN varchar(13) NOT NULL, quantity integer NOT NULL, CHECK(quantity>=0), PRIMARY KEY(order_id, ISBN), FOREIGN KEY(order_id) REFERENCES orders(order_id));",
         "CREATE TABLE IF NOT EXISTS book_author(ISBN varchar(13) NOT NULL, author_name varchar(50) NOT NULL, PRIMARY KEY(ISBN, author_name), FOREIGN KEY(ISBN) REFERENCES book(ISBN));" };
     Connection con = connect.connect();
     System.out.print("Processing...");
@@ -93,14 +91,14 @@ public class System {
   }
 
   // **** not test ******
-  private static void insertData(Scanner keyboard) throws Exception {
+  private static void insertData(Scanner in) throws Exception {
     // if all data is sucessfully loaded, then this variable remains true.If not
     // then false.
     boolean success = true;
 
     Connection con = connect.connect();
     System.out.println("Please enter the folder path");
-    String path = keyboard.next();
+    String path = in.next();
 
     System.out.print("Processing... ");
     String filename = path + "/book.txt";
@@ -246,9 +244,9 @@ public class System {
   }
 
   // **** doing ******
-  private static void setDate(Scanner keyboard) throws Exception {
+  private static void setDate(Scanner in) throws Exception {
     System.out.println("Please Input the date (YYYYMMDD): ");
-    String date = keyboard.next();
+    String date = in.next();
     String year, month, day;
     for (int i = 0; i < 4; i++) {
       year += date.charAt(i); // get the year
