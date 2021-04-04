@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class System {
 
-  public static void run(Scanner in) throws Exception {
+  public static void run(Scanner in, Date sysDate) throws Exception {
 
     run: while (true) {
       System.out.println("<This is the system interface.>");
@@ -244,7 +244,7 @@ public class System {
   }
 
   // **** doing ******
-  private static void setDate(Scanner in) throws Exception {
+  private static void setDate(Scanner in, Date sysDate) throws Exception {
     System.out.println("Please Input the date (YYYYMMDD): ");
     String date = in.next();
     String year, month, day;
@@ -266,6 +266,7 @@ public class System {
       rs = stmt.executeQuery("SELECT MAX(o_date) FROM orders;");
       rs.next();
       System.out.println("Latest date in orders:" + rs);
+      sysDate=(Date) rs; // update the system date, if there is order made in the lastest "order date"
     } catch (SQLException e) {
       System.out.println("SQLException: " + e.getMessage());
       System.out.println("SQLState: " + e.getSQLState());
@@ -289,10 +290,10 @@ public class System {
     }
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     Date newDate = sdf.parse(nDate);
-    int compare_result = newDate.compareTo((Date)rs);
+    int compare_result = newDate.compareTo(sysDate);
     // check the input date is later than the latest date or not
     if(compare_result > 0){
-      Date order_date = newDate; // the newest date used in the system
+      sysDate = newDate; // the newest date used in the system
       System.out.println("Today is "+newDate);
     }
     else{
