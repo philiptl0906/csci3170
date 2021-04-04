@@ -66,7 +66,7 @@ public class Bookstore{
             }
 
         }
-        String psql = "SELECT O.shipping_status, S.quantity FROM orders O , ordering S WHERE order_id = %s";
+        String psql = "SELECT O.shipping_status, S.quantity FROM orders O , ordering S WHERE O.order_id = %s AND S.order_id = O.order_id";
         String aUserInputOrderID = token;
         String sql = String.format(psql, aUserInputOrderID);
         Connection con = Connect.connect();
@@ -155,9 +155,10 @@ public class Bookstore{
     private static void OrQuery(Scanner in){
         String input = '';
         System.out.print("Please input the Month for Order Query (e.g.2005-09): ");
+        while(true){
         input = in.nextLine();
         if(input.matchs("\\d{4}-\\d{2}")){
-            String psql = "SELECT * FROM orders WHERE shipping_status = 'Y', o_date REGEXP '^%s'";
+            String psql = "SELECT * FROM orders WHERE shipping_status = 'Y' AND o_date REGEXP '^%s'";//Not sure can we use REGEXP like this
             String aUserInputODate = input;
             String sql = String.format(psql, aUserInputODate);
             Connection con = Connect.connect();
@@ -173,7 +174,7 @@ public class Bookstore{
                     System.out.println("order_id : " + resultSet.getString("order_id"));
                     System.out.println("customer_id : " + resultSet.getString("customer_id"));
                     System.out.println("date : "+ resultSet.getDate("o_date"));
-                    System.out,println("chage : "+ resultSet.getInt("charge"));
+                    System.out,println("chage : "+ resultSet.getInt("charge"));// i know i type the wrong spelling, but the spec spell like this, so i followed
                     total += resultSet.getInt("charge");
                 }catch(SQLException e){
                     System.out.println("SQLException: " + e.getMessage());
@@ -207,15 +208,69 @@ public class Bookstore{
                 con = null;
             }
         }
+        break;
 
         }else{
             System.out.printlf("Invalid input !!");
+            continue;
+        }
         }
         
     }
 
-    private static void Npop(){
+    private static void Npop(Scanner in){
+        int input = 0;
+        System.out.print("Please input the N popular books number: ");
+         while(true){
+            try{
+                input = in.nextInt();
+            }
+            catch(Exception e){
+                System.out.println("Invalid input!!");
+                continue;
+            }
+        }
+        
+        System.out.println("");
+        System.out.println("ISBN            Title           copies");
+        String psql = "SELECT b.ISBN, b.title, t.Total_no FROM book b, Top_result t WHERE b.ISBN = (SELECT ISBN FROM(SELECT ISBN, TOP %d Total_no FROM (SELECT ISBN, Sum(quantity) AS Total_no FROM ordering GROUP BY ISBN)Total_result ORDER BY Total_no)Top_result)";//Not sure is this correct
+        int aUserInput = input;
+        String sql = String.format(psql, aUserInput);
+        Connection con = Connect.connect();
+        try{
+            Statement stmt = con.createStatement(sql);
+            ResultSet resultSet = stmt.executeQuery();
+            while(resultSet.next()){
+                System.out.println(resultSet.getString("ISBN") + "   " + resultSet.getString("title") + "  " + resultSet.getInt("Total_no"));
+            }
+        }catch (SQLException e){
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        }finally{
+            if(stmt != null){
+                try{
+                    stmt.close();
+                    }catch(SQLException e){
+                            stmt= null;
+                        }
+                    }
+                    if(resultSet != null){
+                        try{
+                            resultSet.close();
+                        }catch(SQLException e){
+                            resultSet = null;
+                        }
 
+                    }
+        }
+        if(con != null){
+            try{
+                con.close();
+            }catch(SQLException e){
+                con = null;
+            }
+        }
     }
 
     
