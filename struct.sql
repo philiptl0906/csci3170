@@ -53,6 +53,20 @@ CREATE TABLE book_author
     FOREIGN KEY(ISBN) REFERENCES book(ISBN)
 );
 
+SELECT b.ISBN, b.title, t.Total_no
+FROM book b, Top_result t
+WHERE b.ISBN = 
+    (SELECT ISBN
+FROM(
+        SELECT ISBN,
+        TOP %d Total_no
+    FROM (
+            SELECT ISBN, Sum(quantity) 
+            AS Total_no
+        FROM ordering
+        GROUP BY ISBN)Total_result
+    ORDER BY Total_no)Top_result)
+
 -- book
 -- INSERT INTO book VALUES ('1-1234-1234-1', 'Database I',100,50);
 -- INSERT INTO book VALUES ('2-2345-2345-2', 'Database II',110,40);
