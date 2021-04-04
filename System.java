@@ -263,7 +263,7 @@ public class System {
     ResultSet rs = null;
     try {
       stmt = con.createStatement();
-      rs = stmt.executeQuery("SELECT MAX(o_date) FROM order ORDER BY order ASC;");
+      rs = stmt.executeQuery("SELECT MAX(o_date) FROM orders;");
       rs.next();
       System.out.println("Latest date in orders:" + rs);
     } catch (SQLException e) {
