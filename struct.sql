@@ -72,6 +72,7 @@ LIMIT 3;
 -- INSERT INTO book VALUES ('4-4567-4567-4', 'Programming in C language',140,10);
 -- INSERT INTO book VALUES ('5-5678-5678-5', 'Programming in Java language',150,5);
 -- INSERT INTO book VALUES ('5-5555-5555-5', 'Test for 0 quantity',150,5);
+-- INSERT INTO book VALUES ('3-2345-2345-2', 'Database III',110,40);
 
 -- customer
 -- INSERT INTO customer VALUES ('adafu', 'Ada','222,Shatin,Hong Kong','4444-4444-4444-4444');
@@ -96,6 +97,7 @@ LIMIT 3;
 -- INSERT INTO orders VALUES ('00000009','2005-10-09','Y',130,'xcai');
 -- INSERT INTO orders VALUES ('00000010','2005-10-13','Y',320,'xcai');
 -- INSERT INTO orders VALUES ('11111111','2099-10-13','N',320,'xcai');
+-- INSERT INTO orders VALUES ('11111112','2099-10-13','Y',110,'xcai');
 
 -- ordering
 -- INSERT INTO ordering VALUES ('00000000','1-1234-1234-1',1);
@@ -111,6 +113,7 @@ LIMIT 3;
 -- INSERT INTO ordering VALUES ('00000010','4-4567-4567-4',1);
 -- INSERT INTO ordering VALUES ('00000010','5-5678-5678-5',1);
 -- INSERT INTO ordering VALUES ('11111111','5-5555-5555-5',0);
+-- INSERT INTO ordering VALUES ('11111112','3-2345-2345-2',1);
 
 
 -- book author
