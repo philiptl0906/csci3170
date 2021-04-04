@@ -53,26 +53,25 @@ CREATE TABLE book_author
     FOREIGN KEY(ISBN) REFERENCES book(ISBN)
 );
 
-SELECT b.ISBN, b.title, t.Total_no
-FROM book b, Top_result t
-WHERE b.ISBN = 
+SELECT b.ISBN, b.title, b.no_of_copies
+FROM book b
+WHERE b.ISBN IN 
     (SELECT ISBN
 FROM(
-        SELECT ISBN,
-        TOP %d Total_no
+        SELECT ISBN, Total_no
     FROM (
-            SELECT ISBN, Sum(quantity) 
-            AS Total_no
+            SELECT ISBN, Sum(quantity) AS Total_no
         FROM ordering
-        GROUP BY ISBN)Total_result
+        GROUP BY ISBN
+        HAVING Total_no>0)Total_result
     ORDER BY Total_no)Top_result)
-
--- book
+LIMIT 3;
 -- INSERT INTO book VALUES ('1-1234-1234-1', 'Database I',100,50);
 -- INSERT INTO book VALUES ('2-2345-2345-2', 'Database II',110,40);
 -- INSERT INTO book VALUES ('3-3456-3456-3', 'Operating System',130,20);
 -- INSERT INTO book VALUES ('4-4567-4567-4', 'Programming in C language',140,10);
 -- INSERT INTO book VALUES ('5-5678-5678-5', 'Programming in Java language',150,5);
+-- INSERT INTO book VALUES ('5-5555-5555-5', 'Test for 0 quantity',150,5);
 
 -- customer
 -- INSERT INTO customer VALUES ('adafu', 'Ada','222,Shatin,Hong Kong','4444-4444-4444-4444');
@@ -96,6 +95,7 @@ FROM(
 -- INSERT INTO orders VALUES ('00000008','2005-10-06','Y',130,'xcai');
 -- INSERT INTO orders VALUES ('00000009','2005-10-09','Y',130,'xcai');
 -- INSERT INTO orders VALUES ('00000010','2005-10-13','Y',320,'xcai');
+-- INSERT INTO orders VALUES ('11111111','2099-10-13','N',320,'xcai');
 
 -- ordering
 -- INSERT INTO ordering VALUES ('00000000','1-1234-1234-1',1);
@@ -110,6 +110,7 @@ FROM(
 -- INSERT INTO ordering VALUES ('00000009','2-2345-2345-2',1);
 -- INSERT INTO ordering VALUES ('00000010','4-4567-4567-4',1);
 -- INSERT INTO ordering VALUES ('00000010','5-5678-5678-5',1);
+-- INSERT INTO ordering VALUES ('11111111','5-5555-5555-5',0);
 
 
 -- book author
