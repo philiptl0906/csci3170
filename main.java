@@ -5,7 +5,7 @@ public class Main {
         boolean applicationIsRunning = true;
         Scanner scanner = new Scanner(System.in);
 
-        while(applicationIsRunning) {
+        while (applicationIsRunning) {
             printMenu();
 
             boolean inputIsValid = false;
@@ -13,38 +13,38 @@ public class Main {
             while (!inputIsValid) {
                 try {
 
-                    int userAccount =  scanner.nextInt();
+                    int userAccount = scanner.nextInt();
 
-                    switch(userAccount) {
-                        case 1:
-                            System.run();
-                            inputIsValid = true;
-                            break;
-                        case 2:
-                            Customer.run();
-                            inputIsValid = true;
-                            break;
-                        case 3:
-                            Bookstore.run();
-                            inputIsValid = true;
-                            break;
-                        case 4:
-                            SystemDate.run();
-                            inputIsValid = true;
-                            break;
-                        case 5:
-                            applicationIsRunning = false;
-                            inputIsValid = true;
-                            break;
-                        default:
-                            System.err.println(Error.INVALID_INPUT);
+                    switch (userAccount) {
+                    case 1:
+                        System.run(scanner);
+                        inputIsValid = true;
+                        break;
+                    case 2:
+                        Customer.run(scanner);
+                        inputIsValid = true;
+                        break;
+                    case 3:
+                        Bookstore.run(scanner);
+                        inputIsValid = true;
+                        break;
+                    case 4:
+                        SystemDate.run(scanner);
+                        inputIsValid = true;
+                        break;
+                    case 5:
+                        applicationIsRunning = false;
+                        inputIsValid = true;
+                        break;
+                    default:
+                        System.err.println(Error.INVALID_INPUT);
                     }
 
                 } catch (Exception e) {
 
                     System.err.println(Error.INVALID_INPUT);
                     scanner.next();
-                    
+
                 }
             }
         }
