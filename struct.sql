@@ -66,12 +66,32 @@ FROM(
         HAVING Total_no>0)Total_result
     ORDER BY Total_no)Top_result)
 LIMIT 3;
+-- the correct one
+SELECT b.ISBN, b.title, b.no_of_copies
+FROM book b
+WHERE b.no_of_copies IN(select *
+from (
+    SELECT b.no_of_copies
+    FROM book b
+    WHERE b.ISBN IN 
+    (SELECT ISBN
+    FROM(
+        SELECT ISBN, Total_no
+        FROM (
+            SELECT ISBN, Sum(quantity) AS Total_no
+            FROM ordering
+            GROUP BY ISBN
+            HAVING Total_no>0)Total_result
+        ORDER BY Total_no)Top_result)
+LIMIT
+2)as t1);
+OR 
 -- INSERT INTO book VALUES ('1-1234-1234-1', 'Database I',100,50);
 -- INSERT INTO book VALUES ('2-2345-2345-2', 'Database II',110,40);
 -- INSERT INTO book VALUES ('3-3456-3456-3', 'Operating System',130,20);
 -- INSERT INTO book VALUES ('4-4567-4567-4', 'Programming in C language',140,10);
 -- INSERT INTO book VALUES ('5-5678-5678-5', 'Programming in Java language',150,5);
--- INSERT INTO book VALUES ('5-5555-5555-5', 'Test for 0 quantity',150,5);
+-- INSERT INTO book VALUES ('5-5555-5555-5', 'Test for 0 quantity',150,50);
 -- INSERT INTO book VALUES ('3-2345-2345-2', 'Database III',110,40);
 
 -- customer
