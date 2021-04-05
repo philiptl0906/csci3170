@@ -5,6 +5,49 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.InputMismatchException;
 import java.sql.*;
+<<<<<<< HEAD
+import java.lang.*;
+
+// not tested
+public class Bookstore {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        run: while (true) {
+            int input = 0;
+            System.out.println("----------------------------------");
+            System.out.println("1. Order Update.");
+            System.out.println("2. Order Query.");
+            System.out.println("3. N most Popular Book Query.");
+            System.out.println("4. Back to main menu.");
+            System.out.println(" ");
+            System.out.print("What is your choice??..");
+
+            try {
+                input = in.nextInt();
+                System.out.println("");
+            }
+
+            catch (Exception e) {
+                input = in.nextInt();
+            }
+
+            finally {
+                switch (input) {
+                case 1:
+                    OrUpdate();
+                    break;
+                case 2:
+                    OrQuery();
+                    break;
+                case 3:
+                    Npop(in);
+                    break;
+                case 4:
+                    break run;
+                default:
+                    System.out.println("Invaild choice.");
+                    break;
+=======
 import java.util.*; 
 
 public class Customer {
@@ -53,11 +96,39 @@ public class Customer {
                 } catch (Exception err) {
                     System.err.println("INVALID INPUT");
                     sc.next();
+>>>>>>> ff2af8d9202f57300e856be980949cb4b3d8a8a5
                 }
             }
         }
     }
 
+<<<<<<< HEAD
+    // not tested
+    private static void OrUpdate() {
+        Scanner in = new Scanner(System.in);
+        String input = "0";
+        String userin;
+
+        Connection con = Connect.connect();
+        Statement stmt = null;
+        ResultSet resultSet = null;
+        Statement upstmt = null;
+        ResultSet upresultSet = null;
+        System.out.print("Please enter the order ID: ");
+        while (true) {
+            try {
+                input = in.nextLine();
+            } catch (Exception e) {
+                System.out.println("Invalid order ID!!");
+                continue;
+            }
+            int len = input.length();
+            if (len == 8) {
+                break;
+            } else {
+                System.out.println("Invalid order ID!!");
+            }
+=======
     // print menu for Customer - done
     private static void printCustMenu() {
         System.out.println("<This is the customer interface.>");
@@ -68,6 +139,7 @@ public class Customer {
         System.out.println("5. Back to main menu.");
         System.out.println("What is your choice??..");
     }
+>>>>>>> ff2af8d9202f57300e856be980949cb4b3d8a8a5
 
     /**
      * Customer book search - Complete
@@ -152,6 +224,61 @@ public class Customer {
         while(!listingAllISBN(isbncharacter)){
             isbncharacter = sc.nextLine();
         }
+<<<<<<< HEAD
+        String psql = "SELECT O.shipping_status, S.quantity FROM orders O , ordering S WHERE O.order_id = %s AND S.order_id = O.order_id";
+        String aUserInputOrderID = input;
+        String sql = String.format(psql, aUserInputOrderID);
+        try {
+            stmt = con.createStatement();
+            resultSet = stmt.executeQuery(sql);
+            int quantity = 0;
+            String status = "";
+            while (resultSet.next()) {
+                status = resultSet.getString("shipping_status");
+                quantity += resultSet.getInt("quantity");
+            }
+            System.out.println(
+                    "the shipping status of " + input + " is " + status + " and " + quantity + " books ordered");
+            con.close();
+
+            if (status.equals("N")) {
+                if (quantity >= 1) {
+                    while (true) {
+                        System.out.print("Are you sure to update the shipping status? (Yes=Y)");
+                        try {
+                            userin = in.nextLine();
+                        } catch (Exception e) {
+                            System.out.println("Invalid input!!");
+                            continue;
+                        }
+                        if (!userin.equals("Y") && !userin.equals("N")) {
+                            System.out.println("Invalid input!!");
+                        } else if (userin.equals("Y")) {
+                            con = Connect.connect();
+
+                            String update = "UPDATE orders SET shipping_status = 'Y' WHERE order_id = %s";
+                            String upsql = String.format(update, input);
+                            try {
+                                upstmt = con.createStatement();
+                                upstmt.executeUpdate(upsql);
+                                System.out.print("Update shiping status");
+                            } catch (SQLException e) {
+                                System.out.println("SQLException: " + e.getMessage());
+                                System.out.println("SQLState: " + e.getSQLState());
+                                System.out.println("VendorError: " + e.getErrorCode());
+                            }
+                            break;
+                        } else if (userin.equals("N")) {
+                            break;
+                        }
+                    }
+                } else {
+                    System.out.println("You can't update the status!");
+                }
+
+            } else if (status.equals("Y")) {
+                System.out.println("You can't update the status!");
+=======
       String mysqlStatement = String.format(
           "SELECT book.ISBN, book.title, book.unit_price, book.no_of_copies, book_author.author_name " + 
           "from book inner join book_author on book.ISBN = book_author.ISBN " +
@@ -237,6 +364,7 @@ public class Customer {
                     };
                     counter++;
                 }
+>>>>>>> ff2af8d9202f57300e856be980949cb4b3d8a8a5
             }
         } 
         
@@ -401,6 +529,58 @@ public class Customer {
     }
   }
 
+<<<<<<< HEAD
+    // not tested
+    private static void OrQuery() {
+        Scanner in = new Scanner(System.in);
+        String input = null;
+        int total = 0;
+        Connection con = Connect.connect();
+        Statement stmt = null;
+        ResultSet resultSet = null;
+        System.out.print("Please input the Month for Order Query (e.g.2005-09): ");
+        while (true) {
+            input = in.nextLine();
+            if (input.matches("\\d{4}-\\d{2}")) {
+                String psql = "SELECT * FROM orders WHERE shipping_status = 'Y' AND o_date REGEXP '^%s'";// Not sure can
+                                                                                                         // we use
+                                                                                                         // REGEXP like
+                                                                                                         // this
+                String aUserInputODate = input;
+                String sql = String.format(psql, aUserInputODate);
+                try {
+                    stmt = con.createStatement();
+                    resultSet = stmt.executeQuery(sql);
+                    int i = 1;
+
+                    while (resultSet.next()) {
+                        System.out.println("");
+                        System.out.println("");
+                        System.out.println("Record : " + i);
+                        System.out.println("order_id : " + resultSet.getString("order_id"));
+                        System.out.println("customer_id : " + resultSet.getString("customer_id"));
+                        System.out.println("date : " + resultSet.getDate("o_date"));
+                        System.out.println("chage : " + resultSet.getInt("charge"));// i know i type the wrong spelling,
+                                                                                    // but the spec spell like this, so
+                                                                                    // i followed
+                        total += resultSet.getInt("charge");
+                        i++;
+                    }
+                } catch (SQLException e) {
+                    System.out.println("SQLException: " + e.getMessage());
+                    System.out.println("SQLState: " + e.getSQLState());
+                    System.out.println("VendorError: " + e.getErrorCode());
+                } finally {
+                    System.out.println("");
+                    System.out.println("");
+                    System.out.println("Total charges of the month is " + total);
+                    if (stmt != null) {
+                        try {
+                            stmt.close();
+                        } catch (SQLException e) {
+                            stmt = null;
+                        }
+=======
   //Ordering Query
   private static void orderQuery(){ // Done and tested
       try{
@@ -518,6 +698,7 @@ public class Customer {
                     System.out.println("ISBN            Number:");
                     while(stres.next()){
                         System.out.println(stres.getString("ISBN")+"  "+stres.getInt("quantity"));
+>>>>>>> ff2af8d9202f57300e856be980949cb4b3d8a8a5
                     }
                 }
             }
@@ -564,6 +745,11 @@ public class Customer {
                         totalBookPrice += (rset2.getInt("unit_price") * rset1.getInt("quantity"));
                     }
                 }
+<<<<<<< HEAD
+                break;
+            } else {
+                System.out.println("Invalid input !!");
+=======
                 int charge = totalBookPrice + (countPurchase*10 +10);
                 // add order to orders
                 String insert = String.format(
@@ -574,6 +760,7 @@ public class Customer {
                 Statement insert2 = con.createStatement();
                 insert2.executeUpdate(insert);
                 loop = true;
+>>>>>>> ff2af8d9202f57300e856be980949cb4b3d8a8a5
                 continue;
             }
         }
@@ -649,6 +836,50 @@ public class Customer {
         System.err.println(err);
     }
 
+<<<<<<< HEAD
+    private static void Npop(Scanner in) {
+        int input = 0;
+        System.out.print("Please input the N popular books number: ");
+
+        while (true) {
+            try {
+                input = in.nextInt();
+            } catch (Exception e) {
+                System.out.println("Invalid input!!");
+                continue;
+            }
+            break;
+        }
+        System.out.println(" ");
+        System.out.println("ISBN            Title           copies");
+        String psql = "SELECT b.ISBN, b.title, t.Total_no FROM book b, Top_result t WHERE b.ISBN = (SELECT ISBN FROM(SELECT ISBN, TOP %d Total_no FROM (SELECT ISBN, Sum(quantity) AS Total_no FROM ordering GROUP BY ISBN)Total_result ORDER BY Total_no)Top_result)";// Not
+                                                                                                                                                                                                                                                                       // sure
+                                                                                                                                                                                                                                                                       // is
+                                                                                                                                                                                                                                                                       // this
+                                                                                                                                                                                                                                                                       // correct
+        int aUserInput = input;
+        String sql = String.format(psql, aUserInput);
+        Connection con = Connect.connect();
+        Statement stmt = null;
+        ResultSet resultSet = null;
+        try {
+            stmt = con.createStatement();
+            resultSet = stmt.executeQuery(sql);
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString("ISBN") + "   " + resultSet.getString("title") + "  "
+                        + resultSet.getInt("Total_no"));
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    stmt = null;
+=======
 }
 private static void orderAltering(){ // Done checked and tested 
     try{
@@ -703,6 +934,7 @@ private static void orderAltering(){ // Done checked and tested
                     array[counter] = rs2.getString("ISBN"); 
                     array1[counter] = rs2.getString("order_id");
                     counter++;
+>>>>>>> ff2af8d9202f57300e856be980949cb4b3d8a8a5
                 }
 
                 int number = 0; //initialization
@@ -959,4 +1191,24 @@ static public class Philip{
       return con;
     }
 }
+}
+
+class Connect {
+    public static Connection connect() {
+        String dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/db19";// uncomplete address, need change later
+        String dbUsername = "Group19";
+        String dbPassword = "CSCI3170";// may change later on
+
+        Connection con = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection(dbAddress, dbUsername, dbPassword);
+        } catch (ClassNotFoundException e) {
+            System.out.println("[Error]: Java MySQL DB Driver not found!!");
+            System.exit(0);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return con;
+    }
 }
