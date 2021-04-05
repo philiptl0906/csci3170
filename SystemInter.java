@@ -12,6 +12,7 @@ public class SystemInter {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String date1 = "0000-00-00";
     Date sysDate = sdf.parse(date1);
+    // System.out.println(sysDate.toString());
     run: while (true) {
       System.out.println("<This is the system interface.>");
       System.out.println("-------------------------------");
@@ -20,7 +21,7 @@ public class SystemInter {
       System.out.println("3. Insert Data.");
       System.out.println("4. Set System Date.");
       System.out.println("5. Back to main menu.\n");
-      System.out.println("Please enter your choice??..");
+      System.out.print("Please enter your choice??..");
 
       int input = 0;
       try {
@@ -77,7 +78,7 @@ public class SystemInter {
   }
 
   private static void deleteTable() throws Exception {
-    String[] deleteTables = { "book", "cusomter", "orders", "ordering", "book_author" };
+    String[] deleteTables = { "book", "customer", "orders", "ordering", "book_author" };
     Connection con = Julianna.connect();
     System.out.print("\rProcessing...");
     try (PreparedStatement changeCon = con.prepareStatement("SET foreign_key_checks = 0;")) {
@@ -91,7 +92,6 @@ public class SystemInter {
     for (int i = 0; i < deleteTables.length; i++) {
       try (PreparedStatement delete = con.prepareStatement("DROP TABLE IF EXISTS " + deleteTables[i])) {
         delete.executeUpdate();
-        System.out.println("Delete Table: " + deleteTables[i]);
       } catch (SQLException e) {
         System.out.println("Delete Table name: " + deleteTables[i]);
         System.out.println("SQLException: " + e.getMessage());
@@ -100,7 +100,7 @@ public class SystemInter {
       } finally {
       }
     }
-    System.out.print("Done! Tables are deleted!\n");
+    System.out.print("Success! Tables are deleted!\n");
     try (PreparedStatement changeOff = con.prepareStatement("SET foreign_key_checks = 1;")) {
       changeOff.executeUpdate();
     } catch (SQLException e) {
@@ -294,7 +294,7 @@ public class SystemInter {
       rs.next();
 
       String order_date = (rs.getString("o_date"));
-      System.out.println("Latest date in orders:" + order_date);
+      System.out.println("Latest date in orders: " + order_date);
       sysDate = rs.getDate("o_date"); // update the system date, if there is order made in the lastest "order date"
 
     } catch (SQLException e) {
@@ -324,7 +324,6 @@ public class SystemInter {
     // check the input date is later than the latest date or not
     if (compare_result > 0) {
       sysDate = newDate; // the newest date used in the system
-      // System.out.println("System Date: " + sysDate);
       System.out.println("Today is " + sdf.format(newDate));
     } else {
       System.out.println("[Error]: The date is not later than the lastest date in orders");
