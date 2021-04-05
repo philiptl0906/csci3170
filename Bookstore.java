@@ -1,12 +1,12 @@
 import java.util.*;
 import java.io.*;
 import java.sql.*;
-import java.lang.Integer.*;
+import java.lang.*;
 
 // not tested
 public class Bookstore {
-    public static void run(Scanner in) {
-
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
         run: while (true) {
             int input = 0;
             System.out.println("----------------------------------");
@@ -23,16 +23,16 @@ public class Bookstore {
             }
 
             catch (Exception e) {
-                input = in.next();
+                input = in.nextInt();
             }
 
             finally {
                 switch (input) {
                 case 1:
-                    OrUpdate(in);
+                    OrUpdate();
                     break;
                 case 2:
-                    OrQuery(in);
+                    OrQuery();
                     break;
                 case 3:
                     Npop(in);
@@ -48,23 +48,25 @@ public class Bookstore {
     }
 
     // not tested
-    private static void OrUpdate(Scanner in) {
-        int input = 0;
+    private static void OrUpdate() {
+        Scanner in = new Scanner(System.in);
+        String input = "0";
         String userin;
-        String token;
+
         Connection con = Connect.connect();
         Statement stmt = null;
         ResultSet resultSet = null;
+        Statement upstmt = null;
+        ResultSet upresultSet = null;
         System.out.print("Please enter the order ID: ");
         while (true) {
             try {
-                input = in.nextInt();
+                input = in.nextLine();
             } catch (Exception e) {
                 System.out.println("Invalid order ID!!");
                 continue;
             }
-            token = input.toString();
-            int len = token.length();
+            int len = input.length();
             if (len == 8) {
                 break;
             } else {
@@ -73,11 +75,11 @@ public class Bookstore {
 
         }
         String psql = "SELECT O.shipping_status, S.quantity FROM orders O , ordering S WHERE O.order_id = %s AND S.order_id = O.order_id";
-        String aUserInputOrderID = input.toString();
+        String aUserInputOrderID = input;
         String sql = String.format(psql, aUserInputOrderID);
         try {
-            stmt = con.createStatement(sql);
-            resultSet = stmt.executeQuery();
+            stmt = con.createStatement();
+            resultSet = stmt.executeQuery(sql);
             int quantity = 0;
             String status = "";
             while (resultSet.next()) {
@@ -86,8 +88,9 @@ public class Bookstore {
             }
             System.out.println(
                     "the shipping status of " + input + " is " + status + " and " + quantity + " books ordered");
+            con.close();
 
-            if (status == "N") {
+            if (status.equals("N")) {
                 if (quantity >= 1) {
                     while (true) {
                         System.out.print("Are you sure to update the shipping status? (Yes=Y)");
@@ -97,15 +100,16 @@ public class Bookstore {
                             System.out.println("Invalid input!!");
                             continue;
                         }
-                        if (userin != "Y" && userin != "N") {
+                        if (!userin.equals("Y") && !userin.equals("N")) {
                             System.out.println("Invalid input!!");
-                        } else if (userin == "Y") {
+                        } else if (userin.equals("Y")) {
+                            con = Connect.connect();
 
-                            psql = "UPDATE orders SET shipping_status = 'Y' WHERE order_id = %s";
-                            sql = String.format(psql, aUserInputOrderID);
+                            String update = "UPDATE orders SET shipping_status = 'Y' WHERE order_id = %s";
+                            String upsql = String.format(update, input);
                             try {
-                                stmt = con.createStatement(sql);
-                                resultSet = stmt.executeQuery();
+                                upstmt = con.createStatement();
+                                upstmt.executeUpdate(upsql);
                                 System.out.print("Update shiping status");
                             } catch (SQLException e) {
                                 System.out.println("SQLException: " + e.getMessage());
@@ -113,7 +117,7 @@ public class Bookstore {
                                 System.out.println("VendorError: " + e.getErrorCode());
                             }
                             break;
-                        } else if (userin == "N") {
+                        } else if (userin.equals("N")) {
                             break;
                         }
                     }
@@ -121,7 +125,7 @@ public class Bookstore {
                     System.out.println("You can't update the status!");
                 }
 
-            } else {
+            } else if (status.equals("Y")) {
                 System.out.println("You can't update the status!");
             }
 
@@ -157,7 +161,8 @@ public class Bookstore {
     }
 
     // not tested
-    private static void OrQuery(Scanner in) {
+    private static void OrQuery() {
+        Scanner in = new Scanner(System.in);
         String input = null;
         int total = 0;
         Connection con = Connect.connect();
@@ -174,8 +179,8 @@ public class Bookstore {
                 String aUserInputODate = input;
                 String sql = String.format(psql, aUserInputODate);
                 try {
-                    stmt = con.createStatement(sql);
-                    resultSet = stmt.executeQuery();
+                    stmt = con.createStatement();
+                    resultSet = stmt.executeQuery(sql);
                     int i = 1;
 
                     while (resultSet.next()) {
@@ -189,6 +194,7 @@ public class Bookstore {
                                                                                     // but the spec spell like this, so
                                                                                     // i followed
                         total += resultSet.getInt("charge");
+                        i++;
                     }
                 } catch (SQLException e) {
                     System.out.println("SQLException: " + e.getMessage());
@@ -216,7 +222,7 @@ public class Bookstore {
                 }
                 break;
             } else {
-                System.out.printlf("Invalid input !!");
+                System.out.println("Invalid input !!");
                 continue;
             }
 
@@ -233,6 +239,7 @@ public class Bookstore {
     private static void Npop(Scanner in) {
         int input = 0;
         System.out.print("Please input the N popular books number: ");
+
         while (true) {
             try {
                 input = in.nextInt();
@@ -240,9 +247,9 @@ public class Bookstore {
                 System.out.println("Invalid input!!");
                 continue;
             }
+            break;
         }
-
-        System.out.println("");
+        System.out.println(" ");
         System.out.println("ISBN            Title           copies");
         String psql = "SELECT b.ISBN, b.title, t.Total_no FROM book b, Top_result t WHERE b.ISBN = (SELECT ISBN FROM(SELECT ISBN, TOP %d Total_no FROM (SELECT ISBN, Sum(quantity) AS Total_no FROM ordering GROUP BY ISBN)Total_result ORDER BY Total_no)Top_result)";// Not
                                                                                                                                                                                                                                                                        // sure
@@ -255,8 +262,8 @@ public class Bookstore {
         Statement stmt = null;
         ResultSet resultSet = null;
         try {
-            stmt = con.createStatement(sql);
-            resultSet = stmt.executeQuery();
+            stmt = con.createStatement();
+            resultSet = stmt.executeQuery(sql);
             while (resultSet.next()) {
                 System.out.println(resultSet.getString("ISBN") + "   " + resultSet.getString("title") + "  "
                         + resultSet.getInt("Total_no"));
@@ -291,4 +298,24 @@ public class Bookstore {
         }
     }
 
+}
+
+class Connect {
+    public static Connection connect() {
+        String dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/db19";// uncomplete address, need change later
+        String dbUsername = "Group19";
+        String dbPassword = "CSCI3170";// may change later on
+
+        Connection con = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection(dbAddress, dbUsername, dbPassword);
+        } catch (ClassNotFoundException e) {
+            System.out.println("[Error]: Java MySQL DB Driver not found!!");
+            System.exit(0);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return con;
+    }
 }
