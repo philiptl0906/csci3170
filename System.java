@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class System {
+  static Connection con = Julianna.connect();
 
   public static void run(Scanner in, Date sysDate) throws Exception {
 
@@ -55,7 +56,7 @@ public class System {
         "CREATE TABLE IF NOT EXISTS orders(order_id varchar(8) PRIMARY KEY, o_date DATE NOT NULL, shipping_status varchar(1) NOT NULL, charge integer NOT NULL, customer_id varchar(10) NOT NULL, CHECK(charge>=0));",
         "CREATE TABLE IF NOT EXISTS ordering(order_id varchar(8) NOT NULL, ISBN varchar(13) NOT NULL, quantity integer NOT NULL, CHECK(quantity>=0), PRIMARY KEY(order_id, ISBN), FOREIGN KEY(order_id) REFERENCES orders(order_id));",
         "CREATE TABLE IF NOT EXISTS book_author(ISBN varchar(13) NOT NULL, author_name varchar(50) NOT NULL, PRIMARY KEY(ISBN, author_name), FOREIGN KEY(ISBN) REFERENCES book(ISBN));" };
-    Connection con = connect.connect();
+    Connection con = Julianna.connect();
     System.out.print("Processing...");
     for (int i = 0; i < createTables.length; i++) {
       try (PreparedStatement create = con.prepareStatement(createTables[i])) {
@@ -74,7 +75,7 @@ public class System {
 
   private static void deleteTable() throws Exception {
     String[] deleteTables = { "book", "cusomter", "orders", "ordering", "book_author" };
-    Connection con = LoadServer.connect();
+    Connection con = Julianna.connect();
     System.out.print("\rProcessing...");
     for (int i = 0; i < deleteTables.length; i++) {
       try (PreparedStatement delete = con.prepareStatement("DROP TABLE IF EXISTS " + deleteTables[i])) {
@@ -96,7 +97,7 @@ public class System {
     // then false.
     boolean success = true;
 
-    Connection con = connect.connect();
+    Connection con = Julianna.connect();
     System.out.println("Please enter the folder path");
     String path = in.next();
 
@@ -257,8 +258,8 @@ public class System {
     for (int i = 6; i < 8; i++) {
       day += date.charAt(i); // get the day
     }
-    String nDate = year+"-"+month+"-"+day;
-    Connection con = connect.connect();
+    String nDate = year + "-" + month + "-" + day;
+    Connection con = Julianna.connect();
     Statement stmt = null;
     ResultSet rs = null;
     try {
@@ -266,7 +267,7 @@ public class System {
       rs = stmt.executeQuery("SELECT MAX(o_date) FROM orders;");
       rs.next();
       System.out.println("Latest date in orders:" + rs);
-      sysDate=(Date) rs; // update the system date, if there is order made in the lastest "order date"
+      sysDate = (Date) rs; // update the system date, if there is order made in the lastest "order date"
     } catch (SQLException e) {
       System.out.println("SQLException: " + e.getMessage());
       System.out.println("SQLState: " + e.getSQLState());
@@ -292,14 +293,34 @@ public class System {
     Date newDate = sdf.parse(nDate);
     int compare_result = newDate.compareTo(sysDate);
     // check the input date is later than the latest date or not
-    if(compare_result > 0){
+    if (compare_result > 0) {
       sysDate = newDate; // the newest date used in the system
-      System.out.println("Today is "+newDate);
-    }
-    else{
+      System.out.println("Today is " + newDate);
+    } else {
       System.out.println("[Error]: The date is not later than the lastest date in orders");
     }
 
   }
-  con.close();
+  // con.close();
+}
+
+class Julianna {
+
+  public static Connection connect() {
+    String dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/db19";
+    String dbUsername = "Group19";
+    String dbPassword = "CSCI3170";
+
+    Connection con = null;
+    try {
+      Class.forName("com.mysql.jdbc.Driver");
+      con = DriverManager.getConnection(dbAddress, dbUsername, dbPassword);
+    } catch (ClassNotFoundException e) {
+      System.out.println("[Error]: Java MySQL DB Driver not found!!");
+      System.exit(0);
+    } catch (SQLException e) {
+      System.out.println(e);
+    }
+    return con;
+  }
 }
