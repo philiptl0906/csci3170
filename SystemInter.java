@@ -5,9 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SystemInter {
+  static Scanner in = new Scanner(System.in);
   static Connection con = Julianna.connect();
+  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+  String date1 = "0000-00-00";
+  Date sysDate = sdf.parse(date1);
 
-  public static void run(Scanner in, Date sysDate) throws Exception {
+  public static void main(String[] args) throws Exception {
 
     run: while (true) {
       System.out.println("<This is the system interface.>");
@@ -248,7 +252,7 @@ public class SystemInter {
   private static void setDate(Scanner in, Date sysDate) throws Exception {
     System.out.println("Please Input the date (YYYYMMDD): ");
     String date = in.next();
-    String year, month, day;
+    String year = "", month = "", day = "";
     for (int i = 0; i < 4; i++) {
       year += date.charAt(i); // get the year
     }
