@@ -8,7 +8,7 @@ public class Main {
         boolean applicationIsRunning = true;
         Scanner scanner = new Scanner(System.in);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date sysDate = sdf.parse("0000-00-00");
+        Date sysDate = sdf.parse("2000-01-01");
 
         while (applicationIsRunning) {
             printMenu(sysDate);
@@ -42,12 +42,12 @@ public class Main {
                             inputIsValid = true;
                             break;
                         default:
-                            System.err.println(Error.INVALID_INPUT);
+                            System.err.println("[Error] Please input [1-5].");
                     }
 
                 } catch (Exception e) {
 
-                    System.err.println(Error.INVALID_INPUT);
+                    System.err.println("[Error]: " + e.getMessage());
                     scanner.next();
 
                 }
@@ -57,7 +57,8 @@ public class Main {
     }
 
     public static void printMenu(Date sysDate) {
-        System.out.println("The system date is now: " + sysDate);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println("The system date is now: " + sdf.format(sysDate));
         System.out.println("<This is the book ordering system.>");
         System.out.println("----------------------------------");
         System.out.println("1. System interface");

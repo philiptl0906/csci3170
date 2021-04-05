@@ -10,9 +10,9 @@ public class SystemInter {
 
   public static void main(String[] args) throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String date1 = "0000-00-00";
+    String date1 = "2019-02-01";
     Date sysDate = sdf.parse(date1);
-    // System.out.println(sysDate.toString());
+    // System.out.println(sdf.format(sysDate));
     run: while (true) {
       System.out.println("<This is the system interface.>");
       System.out.println("-------------------------------");
@@ -121,7 +121,7 @@ public class SystemInter {
     System.out.println("Please enter the folder path");
     String path = in.next();
 
-    System.out.print("Processing... ");
+    System.out.print("Processing...");
     String filename = path + "/book.txt";
     File file = new File(filename);
     try {
@@ -268,6 +268,7 @@ public class SystemInter {
 
     if (success)
       System.out.print("Data is loaded!\n");
+    con.close();
   }
 
   // **** doing ******
@@ -328,9 +329,8 @@ public class SystemInter {
     } else {
       System.out.println("[Error]: The date is not later than the lastest date in orders");
     }
-
+    con.close();
   }
-  // con.close();
 }
 
 class Julianna {
