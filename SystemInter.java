@@ -4,7 +4,7 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class System {
+public class SystemInter {
   static Connection con = Julianna.connect();
 
   public static void run(Scanner in, Date sysDate) throws Exception {
@@ -36,7 +36,7 @@ public class System {
             insertData(in);
             break;
           case 4:
-            setDate(in);
+            setDate(in, sysDate);
             break;
           case 5:
             break run;
