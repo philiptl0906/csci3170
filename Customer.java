@@ -11,7 +11,7 @@ public class Customer {
     static Scanner sc = new Scanner(System.in);
     static Connection con = Philip.connect();
     public static void main(String[] args) {
-        orderCreation();
+        run();
     }
     public static void run() { 
 
@@ -121,10 +121,37 @@ public class Customer {
           }
       }
   }
+  private static Boolean listingAllISBN(String a){
+      try{
+          List<String> aISBNLIST = new ArrayList<String>();
+          String sql  = String.format(
+              "Select * "+
+              "from book "
+          );
+          Statement sqls = con.createStatement();
+          ResultSet sqlr = sqls.executeQuery(sql);
+          if(!sqlr.isBeforeFirst()){
+            System.out.println("There are no records in table book");
+          } else{
+              while(sqlr.next()){
+                aISBNLIST.add(sqlr.getString("ISBN"));
+              }
+          }
+          if(aISBNLIST.contains(a)) return true;
+          return false;
+      }catch(Exception err) {
+      System.err.println(err);
+      return false;
+  }
+  }
   private static void bookSearchISBN() { // Search by ISBN - Complete, TESTED. debug: add for user input
     
     try {
-      String isbncharacter = sc.nextLine();
+        System.out.println("Input the ISBN: ");
+        String isbncharacter = "";
+        while(!listingAllISBN(isbncharacter)){
+            isbncharacter = sc.nextLine();
+        }
       String mysqlStatement = String.format(
           "SELECT book.ISBN, book.title, book.unit_price, book.no_of_copies, book_author.author_name " + 
           "from book inner join book_author on book.ISBN = book_author.ISBN " +
@@ -158,7 +185,11 @@ public class Customer {
 }
   private static void bookSearchBT() { // Search by book title - Complete and tested need debugging to get user input
     try {
-        String bookTitle = sc.nextLine(); // request for user input
+        System.out.println("Input the book title");
+        String bookTitle = "";
+        while(bookTitle.equals("")){
+        bookTitle = sc.nextLine(); // request for user input
+        }
         String exactMatchBT = "";
         List<String> exactISBN = new ArrayList<String>();
         int counter =1;
@@ -252,7 +283,11 @@ public class Customer {
   }
   private static void bookSearchAN() { // Done and tested - need debugging to prompt
     try {
-        String authorName = sc.nextLine();
+        System.out.println("Please Input the Author name:");
+        String authorName ="";
+        while(authorName.equals("")){
+        authorName = sc.nextLine();
+        }
         String exactMatchAN = "";
         List<String> exactAN = new ArrayList<String>();
         int counter =1;
@@ -370,7 +405,10 @@ public class Customer {
   private static void orderQuery(){ // Done and tested
       try{
         System.out.println("Please Input Customer ID:");
-        String cid = sc.nextLine();
+        String cid = "";
+        while(cid.equals("")){
+        cid = sc.nextLine();
+        }
         System.out.println("Please Input the Year:");
         String thisYear = sc.nextLine();
         int counter = 1;
@@ -413,8 +451,8 @@ public class Customer {
         Statement gg = con.createStatement();
         ResultSet rem = gg.executeQuery(grid);
         rem.next();
-        String order_id = Integer.toString(Integer.parseInt(rem.getString("order_id")) +1 );
-        
+        String order_id = String.format("%08d",Integer.valueOf(rem.getString("order_id")) +1 );
+
         // Date format
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -427,7 +465,10 @@ public class Customer {
 
         //Entering Customer ID
         System.out.print("Please enter your CustomerID??");
-        String cid = sc.nextLine();
+        String cid = "";
+        while(cid.equals("")){
+            cid = sc.nextLine();
+        }
 
         //Checking ISBN
 
@@ -484,6 +525,16 @@ public class Customer {
 
             // case 2 - F
             if(isbn.equals(string3) || isbn.equals(string4)){
+                String show = String.format(
+                    "select ISBN, quantity " +
+                    "from ordering " +
+                    "where order_id =\"%s\" ",order_id
+                );
+                Statement showSt = con.createStatement();
+                ResultSet stres = showSt.executeQuery(show);
+                if(!stres.isBeforeFirst()){
+                    System.out.println("Please insert a book first before finishing the order."); // this order_id still has no orderings yet
+                }else {
                 // System.out.println("Went through F");
                 int countPurchase = 0; //No of copies of all book ordered
                 int totalBookPrice = 0; //// Total book price : Sum(unit price * qty)
@@ -522,10 +573,10 @@ public class Customer {
                 );
                 Statement insert2 = con.createStatement();
                 insert2.executeUpdate(insert);
-                // System.out.println("Yo mama fat");
                 loop = true;
                 continue;
             }
+        }
 
             // case 3 - correctly inputted ISBN - Ask for quantity
             if(isbnList.contains(isbn)){
@@ -568,6 +619,27 @@ public class Customer {
                     );
                     Statement insert1 = con.createStatement();
                     insert1.executeUpdate(sqlxx);
+
+                    // decrease the number of copies of the book
+                    String sqlxx1 = String.format(
+                        "Select * "+
+                        "from book "+
+                        "where ISBN =\"%s\" ",isbn
+                    );
+                    Statement sqlxx1s = con.createStatement();
+                    ResultSet sqlxx1r = sqlxx1s.executeQuery(sqlxx1);
+                    sqlxx1r.next();
+                    int aa1 = sqlxx1r.getInt("no_of_copies");
+                    
+                    // Update
+                    String sqlUp = String.format(
+                        "update book " +
+                        "set no_of_copies= %d " +
+                        "where ISBN =\"%s\" ", aa1-qty, isbn
+                    );
+                    Statement sqlups= con.createStatement();
+                    sqlups.executeUpdate(sqlUp);
+                    System.out.println("Updated no.of copies");
                 } else {
                     System.out.println("Quantity ordered exceed number of available quantity");
                 }
@@ -578,13 +650,16 @@ public class Customer {
     }
 
 }
-private static void orderAltering(){
+private static void orderAltering(){ // Done checked and tested 
     try{
         System.out.println(" Please enter the OrderID that you want to change:");
-        String oid = sc.nextLine();
-
+        String oid ="";
+        while(oid.equals("")){
+            oid = sc.nextLine();
+        }
         //Add copies to order 
-        String array[]={};// create Array 
+        String array[]=new String[1000];// create Array  storing ISBN
+        String array1[]=new String[1000]; // create Array storing order_id
         Boolean inputValid = false;
         //Get the order and orders:
         String sql1 = String.format(
@@ -594,16 +669,19 @@ private static void orderAltering(){
         );
         Statement st1 = con.createStatement();
         ResultSet rs1 = st1.executeQuery(sql1);
-        String x = rs1.getString("shipping_status"); // shipping status
         int counter = 1; // initialize counter
         if(!rs1.isBeforeFirst()){
             System.out.println("There is no order for this order_id");
         } else {
-            rs1.next()
-            System.out.print("order_id: "+oid);
-            System.out.print("shipping: "+rs1.getString("shipping_status"));
-            System.out.print("charge: "+rs1.getInt("charge"));
-            System.out.print("customerID= "+rs1.getString("customer_id"));
+            rs1.next();
+
+            String x = rs1.getString("shipping_status"); // shipping status
+
+            //UI design
+            System.out.print("order_id: "+oid +", ");
+            System.out.print("shipping: "+rs1.getString("shipping_status") +", ");
+            System.out.print("charge: "+rs1.getInt("charge")+", ");
+            System.out.println("customerID= "+rs1.getString("customer_id"));
 
             // Select all with same order ID from ordering
             String sql2 = String.format(
@@ -613,51 +691,76 @@ private static void orderAltering(){
             );
             Statement st2 = con.createStatement();
             ResultSet rs2 = st2.executeQuery(sql2);
+
+
             if(!rs2.isBeforeFirst()){
-                System.out.println("There is no book here");
+                System.out.println("There is no book here"); //no orders
             }else {
                 while(rs2.next()){
-                    System.out.println("book no: "+ counter);
-                    System.out.print("ISBN = "+ rs2.getString("ISBN"));
-                    System.out.print("quantity= " +rs2.getString("quantity"));
-                    array[counter] = rs2.getString("ISBN");
+                    System.out.print("book no: "+ counter+ ", ");
+                    System.out.print("ISBN = "+ rs2.getString("ISBN")+", ");
+                    System.out.println("quantity= " +rs2.getString("quantity")+", ");
+                    array[counter] = rs2.getString("ISBN"); 
+                    array1[counter] = rs2.getString("order_id");
                     counter++;
                 }
-                int number = 0;
+
+                int number = 0; //initialization
+                
+                //Ensuring valid input
                 while(!inputValid){
                 System.out.println("Which book you want to alter (input book no.): ");
                 number = sc.nextInt(); //scanning for the number
                 if(number <= counter )
                     inputValid = true;
                 }
+
+                //Decision UI
+                String decision = "";
+                int counterDecision =0;
                 System.out.println("input add or remove");
-                String decision = sc.nextLine();
+                while(!(decision.equals("add") || decision.equals("remove"))){
+                decision = sc.nextLine();
+                if (counterDecision != 0) System.out.println("Please input add or remove: ");
+                counterDecision++;
+                }
+        
                 
                 if(decision.equals("add")){
-                // check if valid number 
                 
                 //valid number
                 System.out.println("How many copies do you want to add?");
                 int addCopies = sc.nextInt();
 
                 //get the ISBN of the number.
-
-                // check of number of available copies
                 String noc = String.format(
-                    "select no_of_copies "+
+                    "select * "+
                     "from book " +
                     "where ISBN = \"%s\" ",array[number]
                 );
                 Statement noc1 = con.createStatement();
                 ResultSet nocst = noc1.executeQuery(noc);
                 nocst.next();
+                
+
+                // check of number of available copies
                 if(nocst.getInt("no_of_copies")>addCopies && x.equals("N")){
                     // succesful
+                    System.out.println("Update is ok!");
+                    String aa = String.format(
+                        "select * "+
+                        "from ordering "+
+                        "where order_id=\"%s\" and ISBN =\"%s\" ",oid, array[number]
+                    );
+                    Statement aas = con.createStatement();
+                    ResultSet aar = aas.executeQuery(aa);
+                    aar.next();
+
                     // ADD the copies to the ordering
                     String sql4 = String.format(
                         "update ordering " +
                         "set quantity = %d " +
-                        "where order_id =\"%s\" ",addCopies,oid
+                        "where order_id =\"%s\" and ISBN= \"%s\" ",addCopies+aar.getInt("quantity"),oid,array[number]
                     );
                     Statement up1 = con.createStatement();
                     up1.executeUpdate(sql4);
@@ -672,6 +775,34 @@ private static void orderAltering(){
                     Statement up2 = con.createStatement();
                     up2.executeUpdate(sql5);
 
+                    System.out.println("Update done!");
+
+                    //Update the charge - calculate the additional charge
+                    // Additional Total Book Price : - Extra no.of copies(add_copies) * unit _price
+                    int extraTBP = addCopies * nocst.getInt("unit_price");
+                    int extraSC = addCopies * 10;
+                    int extraCharge = extraTBP + extraSC;
+                    String sqlu1 = String.format(
+                        "Select * " +
+                        "from orders " +
+                        "where order_id = \"%s\" ",oid
+                    );
+                    Statement sqlu1s = con.createStatement();
+                    ResultSet sqlu1r = sqlu1s.executeQuery(sqlu1);
+                    sqlu1r.next();
+                    int newCharge = extraCharge + sqlu1r.getInt("charge");
+
+                    String sqluc1 = String.format(
+                        "update orders "+
+                        "set charge = %d "+
+                        "where order_id = \"%s\" ",newCharge,oid
+                    );
+                    Statement sqluc1s = con.createStatement();
+                    sqluc1s.executeUpdate(sqluc1);
+
+                    System.out.println("Updated Charge");
+
+
 
                 } else {
                     if(nocst.getInt("no_of_copies")< addCopies)
@@ -682,6 +813,100 @@ private static void orderAltering(){
                 }
                 
                 // remove
+                if(decision.equals("remove")){
+                    System.out.println("Input the number:");
+                    int deleteCopies = sc.nextInt();
+
+                    // get the quantity in the orders.
+                    String deleteQty = String.format(
+                        "SELECT quantity "+
+                        "from ordering "+
+                        "where order_id= \"%s\" and ISBN= \"%s\" ",oid,array[number]
+                    );
+                    Statement delQty = con.createStatement();
+                    ResultSet dell = delQty.executeQuery(deleteQty);
+                    dell.next();
+                    //check if valid
+                    if(dell.getInt("quantity")<deleteCopies){
+                        System.out.println("You want to delete more than what's there"); //not valid
+                    }
+                    else { //valid 
+                        if(x.equals("N")){ // not shipped yet
+                            // delete copies in quantity
+                            int newCopies = dell.getInt("quantity") - deleteCopies;
+                            String sql6 = String.format(
+                                "update ordering " +
+                                "set quantity = %d " +
+                                "where order_id =\"%s\" and ISBN= \"%s\" ",newCopies,oid,array[number]
+                            );
+                            Statement del1 = con.createStatement();
+                            del1.executeUpdate(sql6);
+
+                            //Get the number of available copies
+                            String sql8 = String.format(
+                                "Select * "+
+                                "from book "+
+                                "where ISBN= \"%s\" ",array[number]
+                            );
+                            Statement sql8s = con.createStatement();
+                            ResultSet sqll = sql8s.executeQuery(sql8);
+                            sqll.next();
+
+                            int newQty = sqll.getInt("no_of_copies") + deleteCopies;
+
+                            // increment no_of available copies
+                            String sql7 = String.format(
+                                "update book " +
+                                "set no_of_copies = %d " +
+                                "where ISBN =\"%s\" ",newQty,array[number]
+                            );
+                            Statement del2 = con.createStatement();
+                            del2.executeUpdate(sql7);
+
+                            System.out.println("Update done!");
+
+                            String nox = String.format(
+                                "Select * " +
+                                "from book " +
+                                "where ISBN =\"%s\" ",array[number]
+                            );
+                            Statement nox1 = con.createStatement();
+                            ResultSet noxs = nox1.executeQuery(nox);
+                            noxs.next();
+
+                            //update charge
+                            int lessTBP = deleteCopies * noxs.getInt("unit_price");
+                            int lessSP = deleteCopies * 10; 
+                            int lessCharge = lessTBP + lessSP ;
+                            String sqlu1 = String.format(
+                                "Select * " +
+                                "from orders " +
+                                "where order_id = \"%s\" ",oid
+                            );
+                            Statement sqlu1s = con.createStatement();
+                            ResultSet sqlu1r = sqlu1s.executeQuery(sqlu1);
+                            sqlu1r.next();
+                            int newCharge = sqlu1r.getInt("charge") - lessCharge;
+
+                            String sqluc1 = String.format(
+                                "update orders "+
+                                "set charge = %d "+
+                                "where order_id = \"%s\" ",newCharge,oid
+                            );
+                            Statement sqluc1s = con.createStatement();
+                            sqluc1s.executeUpdate(sqluc1);
+
+                            System.out.println("Updated Charge");
+
+
+
+
+
+
+    
+                        }
+                    }
+                }
                 
 
 
@@ -689,8 +914,8 @@ private static void orderAltering(){
 
          
         }
-
-        //Remove copies to order
+        
+        // print updated
 
 
 
@@ -735,4 +960,3 @@ static public class Philip{
     }
 }
 }
-
