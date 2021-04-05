@@ -1,7 +1,5 @@
 import java.util.Scanner;
-
 import javax.naming.spi.DirStateFactory.Result;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,7 +11,6 @@ public class Customer {
     static Scanner sc = new Scanner(System.in);
     static Connection con = Philip.connect();
     public static void main(String[] args) {
-        System.out.println("Hello world!");
         orderCreation();
     }
     public static void run() { 
@@ -73,7 +70,7 @@ public class Customer {
     }
 
     /**
-     * Customer book search - not completed yet
+     * Customer book search - Complete
      */
     private static void printCustBSMenu() {
         System.out.println("What do u want to search??");
@@ -406,6 +403,8 @@ public class Customer {
   // Creating orders
   private static void orderCreation() {
     try { 
+
+        //Getting ORDER_ID (+1)
         String grid = String.format(
         "select order_id "+
         "from orders "+
@@ -415,61 +414,54 @@ public class Customer {
         ResultSet rem = gg.executeQuery(grid);
         rem.next();
         String order_id = Integer.toString(Integer.parseInt(rem.getString("order_id")) +1 );
-        // String order_id = Integer.toString(Integer.parseInt(largestOrderID()) + 1); // new order_id for this order creation
         
-        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-        Date newDate = date.parse("2015-06-09");
+        // Date format
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        String date = simpleDateFormat.format(new Date());
+        
 
         List<String> isbnList = new ArrayList<String>();
-        Boolean loop = false;
-        String isbn =""; //initialization
+        Boolean loop = false; // for the ISBN loop
+        String isbn =""; 
+
+        //Entering Customer ID
         System.out.print("Please enter your CustomerID??");
         String cid = sc.nextLine();
-        String mysqlStatemen1 = String.format(
-            "select order_id " +
-            "from orders " +
-            "where customer_id = \"%s\" ", cid
+
+        //Checking ISBN
+
+        //Getting all ISBN lists into isbnList
+        String isbnchecker = String.format(
+        "SELECT ISBN " +
+        "from book "
         );
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery(mysqlStatemen1);
-        if(!rs.isBeforeFirst()){
-            // System.out.println("Record not found");
-        }else{
-            while(rs.next()){
-                // System.out.print("hello");
-                String mysqlStatement2 = String.format(
-                "select order_id, ISBN " +
-                "from ordering " +
-                "where order_ID =\"%s\" ",rs.getString("order_id")
-            );
-            Statement stmt2 = con.createStatement();
-            ResultSet rs2 = stmt2.executeQuery(mysqlStatement2);
-            if(!rs2.isBeforeFirst()){
-                // System.out.println("Record not found");
-            }else{
-                while(rs2.next()){
-                    isbnList.add(rs2.getString("ISBN"));
-                }
-            }
-            }
-        }
+        Statement stisbnchecker = con.createStatement();
+        ResultSet rsetisbnChecker = stisbnchecker.executeQuery(isbnchecker);
+        while(rsetisbnChecker.next()){
+            isbnList.add(rsetisbnChecker.getString("ISBN"));
+        };
+
+        // UI for ISBN 
         System.out.println("What books do you want to order??");
         System.out.println("Input ISBN and then quantity.");
         System.out.println("You can press \"L\" to see ordered list, or \"F\" to finish ordering.");
+        Boolean initializeOrders = false;
+        //Loop for ISBN
         while(!loop){
             System.out.println("Please enter the book's ISBN:");
             isbn = sc.nextLine();
             isbn = String.valueOf(isbn);
-            System.out.println(isbn);
+            // System.out.println(isbn);
             String string1 = "L";
             String string2 = "l";
             String string3 = "F";
             String string4 = "f";
             //check cases
 
-            // case 1
+            // case 1 - L 
             if (isbn.equals(string1) || isbn.equals(string2)){
-                System.out.println("Went through L");
+                // System.out.println("Went through L");
                 
                 // show the existing order
                 String show = String.format(
@@ -480,7 +472,7 @@ public class Customer {
                 Statement showSt = con.createStatement();
                 ResultSet stres = showSt.executeQuery(show);
                 if(!stres.isBeforeFirst()){
-                    System.out.println("No orders of this Order_id");
+                    System.out.println("No orders of this Order_id"); // this order_id still has no orderings yet
                 }else {
                     System.out.println("ISBN            Number:");
                     while(stres.next()){
@@ -490,9 +482,9 @@ public class Customer {
             }
 
 
-            // case 2
+            // case 2 - F
             if(isbn.equals(string3) || isbn.equals(string4)){
-                System.out.println("Went through F");
+                // System.out.println("Went through F");
                 int countPurchase = 0; //No of copies of all book ordered
                 int totalBookPrice = 0; //// Total book price : Sum(unit price * qty)
                 // calculate charge: 
@@ -524,23 +516,27 @@ public class Customer {
                 int charge = totalBookPrice + (countPurchase*10 +10);
                 // add order to orders
                 String insert = String.format(
-                    "insert into orders " +
-                    "values (\"%s\",%tc,%c,%d,\"%s\") ",order_id, newDate,'N',charge,cid
-
+                    "update orders " +
+                    "set charge = %d " +
+                    "where order_id =\"%s\" ",charge,order_id
                 );
                 Statement insert2 = con.createStatement();
                 insert2.executeUpdate(insert);
-                System.out.println("Yo mama fat");
+                // System.out.println("Yo mama fat");
                 loop = true;
                 continue;
             }
 
-            // case 3 - correctly inputted ISBN
+            // case 3 - correctly inputted ISBN - Ask for quantity
             if(isbnList.contains(isbn)){
+                
+                // Prompt for quantity
                 System.out.println("Please enter the quantity of the order: ");
                 int qty = sc.nextInt();
-                int copies = 0;
-                // check if qty is correct
+
+                int copies = 0; // this is used to check for no.of available copies
+
+                // check if qty is available
                 String sql2 = String.format(
                     "select no_of_copies "+ 
                     "from book "+
@@ -551,15 +547,21 @@ public class Customer {
                 r2.next();
                 copies = r2.getInt("no_of_copies");
                 
+                // The checking part
                 if (copies >= qty){
-                    //create empty order ? 
+                    //Step 1: Create empty data in orders
+                    //create empty order (without the charge first) - Update when 'F'
+                    if(!initializeOrders){
                     String emptyOrders = String.format(
                         "insert into orders " +
-                        "values(\"%s\",%tc,\"%s\",%d,\"%s\") ",order_id,date,"N",0,cid
+                        "values(\"%s\",\"%s\",\"%s\",%d,\"%s\") ",order_id, date,"N",0,cid
                     );
                     Statement empty = con.createStatement();
                     empty.executeUpdate(emptyOrders);
-                    // add to ordering
+                    initializeOrders = true;
+                    }
+                    //Step 2: update to ordering
+                    //add to ordering
                     String sqlxx = String.format(
                         "insert into ordering (order_id,ISBN,quantity) "+
                         "values (\"%s\",\"%s\",%d)",order_id,isbn,qty
@@ -578,8 +580,120 @@ public class Customer {
 }
 private static void orderAltering(){
     try{
-        //Add copies to order
+        System.out.println(" Please enter the OrderID that you want to change:");
+        String oid = sc.nextLine();
+
+        //Add copies to order 
+        String array[]={};// create Array 
+        Boolean inputValid = false;
+        //Get the order and orders:
+        String sql1 = String.format(
+            "select * "+
+            "from orders " +
+            "where order_id = \"%s\" ",oid
+        );
+        Statement st1 = con.createStatement();
+        ResultSet rs1 = st1.executeQuery(sql1);
+        String x = rs1.getString("shipping_status"); // shipping status
+        int counter = 1; // initialize counter
+        if(!rs1.isBeforeFirst()){
+            System.out.println("There is no order for this order_id");
+        } else {
+            rs1.next()
+            System.out.print("order_id: "+oid);
+            System.out.print("shipping: "+rs1.getString("shipping_status"));
+            System.out.print("charge: "+rs1.getInt("charge"));
+            System.out.print("customerID= "+rs1.getString("customer_id"));
+
+            // Select all with same order ID from ordering
+            String sql2 = String.format(
+                "Select * "+
+                "from ordering "+
+                "where order_id = \"%s\" ",oid
+            );
+            Statement st2 = con.createStatement();
+            ResultSet rs2 = st2.executeQuery(sql2);
+            if(!rs2.isBeforeFirst()){
+                System.out.println("There is no book here");
+            }else {
+                while(rs2.next()){
+                    System.out.println("book no: "+ counter);
+                    System.out.print("ISBN = "+ rs2.getString("ISBN"));
+                    System.out.print("quantity= " +rs2.getString("quantity"));
+                    array[counter] = rs2.getString("ISBN");
+                    counter++;
+                }
+                int number = 0;
+                while(!inputValid){
+                System.out.println("Which book you want to alter (input book no.): ");
+                number = sc.nextInt(); //scanning for the number
+                if(number <= counter )
+                    inputValid = true;
+                }
+                System.out.println("input add or remove");
+                String decision = sc.nextLine();
+                
+                if(decision.equals("add")){
+                // check if valid number 
+                
+                //valid number
+                System.out.println("How many copies do you want to add?");
+                int addCopies = sc.nextInt();
+
+                //get the ISBN of the number.
+
+                // check of number of available copies
+                String noc = String.format(
+                    "select no_of_copies "+
+                    "from book " +
+                    "where ISBN = \"%s\" ",array[number]
+                );
+                Statement noc1 = con.createStatement();
+                ResultSet nocst = noc1.executeQuery(noc);
+                nocst.next();
+                if(nocst.getInt("no_of_copies")>addCopies && x.equals("N")){
+                    // succesful
+                    // ADD the copies to the ordering
+                    String sql4 = String.format(
+                        "update ordering " +
+                        "set quantity = %d " +
+                        "where order_id =\"%s\" ",addCopies,oid
+                    );
+                    Statement up1 = con.createStatement();
+                    up1.executeUpdate(sql4);
+
+                    // Decrement from the available book list
+                    int newQty = nocst.getInt("no_of_copies") - addCopies;
+                    String sql5 = String.format(
+                        "update book " +
+                        "set no_of_copies = %d " +
+                        "where ISBN =\"%s\" ",newQty,array[number]
+                    );
+                    Statement up2 = con.createStatement();
+                    up2.executeUpdate(sql5);
+
+
+                } else {
+                    if(nocst.getInt("no_of_copies")< addCopies)
+                    System.out.println("There are no sufficient number of books");
+                    if(!x.equals("N"))
+                    System.out.println("The books in the order are shipped");
+                }
+                }
+                
+                // remove
+                
+
+
+        }
+
+         
+        }
+
         //Remove copies to order
+
+
+
     } 
     catch(Exception err){
         System.err.println(err);
@@ -622,4 +736,3 @@ static public class Philip{
 }
 }
 
-    
