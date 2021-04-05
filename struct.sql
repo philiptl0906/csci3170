@@ -20,7 +20,7 @@ CREATE TABLE book
 CREATE TABLE customer
 (
     customer_id varchar(10) PRIMARY KEY,
-    name varchar(50) NOT NULL,
+    cus_name varchar(50) NOT NULL,
     shipping_address varchar(200) NOT NULL,
     credit_card_no varchar(19) NOT NULL
 );

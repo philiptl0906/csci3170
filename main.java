@@ -22,7 +22,7 @@ public class Main {
 
                     switch (userAccount) {
                         case 1:
-                            System.run(scanner, sysDate);
+                            SystemInter.run(scanner, sysDate);
                             inputIsValid = true;
                             break;
                         case 2:

@@ -7,12 +7,11 @@ import java.util.Date;
 public class SystemInter {
   static Scanner in = new Scanner(System.in);
   static Connection con = Julianna.connect();
-  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-  String date1 = "0000-00-00";
-  Date sysDate = sdf.parse(date1);
 
   public static void main(String[] args) throws Exception {
-
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    String date1 = "0000-00-00";
+    Date sysDate = sdf.parse(date1);
     run: while (true) {
       System.out.println("<This is the system interface.>");
       System.out.println("-------------------------------");
@@ -56,7 +55,7 @@ public class SystemInter {
 
     String[] createTables = {
         "CREATE TABLE IF NOT EXISTS book(ISBN varchar(13) PRIMARY KEY, title varchar(100) NOT NULL, unit_price integer NOT NULL, no_of_copies integer NOT NULL, CHECK(unit_price>=0 AND no_of_copies>=0));",
-        "CREATE TABLE IF NOT EXISTS customer(customer_id varchar(10) PRIMARY KEY, name varchar(50) NOT NULL, shipping_address varchar(200) NOT NULL, credit_card_no varchar(19) NOT NULL);",
+        "CREATE TABLE IF NOT EXISTS customer(customer_id varchar(10) PRIMARY KEY, cus_name varchar(50) NOT NULL, shipping_address varchar(200) NOT NULL, credit_card_no varchar(19) NOT NULL);",
         "CREATE TABLE IF NOT EXISTS orders(order_id varchar(8) PRIMARY KEY, o_date DATE NOT NULL, shipping_status varchar(1) NOT NULL, charge integer NOT NULL, customer_id varchar(10) NOT NULL, CHECK(charge>=0));",
         "CREATE TABLE IF NOT EXISTS ordering(order_id varchar(8) NOT NULL, ISBN varchar(13) NOT NULL, quantity integer NOT NULL, CHECK(quantity>=0), PRIMARY KEY(order_id, ISBN), FOREIGN KEY(order_id) REFERENCES orders(order_id));",
         "CREATE TABLE IF NOT EXISTS book_author(ISBN varchar(13) NOT NULL, author_name varchar(50) NOT NULL, PRIMARY KEY(ISBN, author_name), FOREIGN KEY(ISBN) REFERENCES book(ISBN));" };
@@ -81,10 +80,19 @@ public class SystemInter {
     String[] deleteTables = { "book", "cusomter", "orders", "ordering", "book_author" };
     Connection con = Julianna.connect();
     System.out.print("\rProcessing...");
+    try (PreparedStatement changeCon = con.prepareStatement("SET foreign_key_checks = 0;")) {
+      changeCon.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println("SQLException: " + e.getMessage());
+      System.out.println("SQLState: " + e.getSQLState());
+      System.out.println("VendorError: " + e.getErrorCode());
+    }
+
     for (int i = 0; i < deleteTables.length; i++) {
       try (PreparedStatement delete = con.prepareStatement("DROP TABLE IF EXISTS " + deleteTables[i])) {
         delete.executeUpdate();
       } catch (SQLException e) {
+        System.out.println("Delete Table name: " + deleteTables[i]);
         System.out.println("SQLException: " + e.getMessage());
         System.out.println("SQLState: " + e.getSQLState());
         System.out.println("VendorError: " + e.getErrorCode());
@@ -92,6 +100,13 @@ public class SystemInter {
       }
     }
     System.out.print("Done! Tables are deleted!\n");
+    try (PreparedStatement changeOff = con.prepareStatement("SET foreign_key_checks = 1;")) {
+      changeOff.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println("SQLException: " + e.getMessage());
+      System.out.println("SQLState: " + e.getSQLState());
+      System.out.println("VendorError: " + e.getErrorCode());
+    }
     con.close();
   }
 
@@ -112,7 +127,7 @@ public class SystemInter {
       Scanner inputStream = new Scanner(file);
       while (inputStream.hasNext()) {
         String data = inputStream.nextLine();
-        String[] values = data.split("|");
+        String[] values = data.split("\\|");
         int unit_price = Integer.parseInt(values[2]);
         int no_of_copies = Integer.parseInt(values[3]);
         try (PreparedStatement insert = con.prepareStatement("INSERT INTO book VALUES ('" + values[0] + "', '"
@@ -120,6 +135,7 @@ public class SystemInter {
           insert.executeUpdate();
           insert.close();
         } catch (SQLException e) {
+          System.out.println("Book Insertion");
           System.out.println("SQLException: " + e.getMessage());
           System.out.println("SQLState: " + e.getSQLState());
           System.out.println("VendorError: " + e.getErrorCode());
@@ -140,12 +156,13 @@ public class SystemInter {
       Scanner inputStream = new Scanner(file);
       while (inputStream.hasNext()) {
         String data = inputStream.nextLine();
-        String[] values = data.split("|");
+        String[] values = data.split("\\|");
         try (PreparedStatement insert = con.prepareStatement("INSERT INTO customer VALUES ('" + values[0] + "', '"
             + values[1] + "', '" + values[2] + "', '" + values[3] + "');")) {
           insert.executeUpdate();
           insert.close();
         } catch (SQLException e) {
+          System.out.println("customer Insertion");
           System.out.println("SQLException: " + e.getMessage());
           System.out.println("SQLState: " + e.getSQLState());
           System.out.println("VendorError: " + e.getErrorCode());
@@ -167,13 +184,15 @@ public class SystemInter {
       Scanner inputStream = new Scanner(file);
       while (inputStream.hasNext()) {
         String data = inputStream.nextLine();
-        String[] values = data.split("|");
+        String[] values = data.split("\\|");
         int charge = Integer.parseInt(values[3]);
+
         try (PreparedStatement insert = con.prepareStatement("INSERT INTO orders VALUES ('" + values[0] + "', '"
             + values[1] + "', '" + values[2] + "', " + charge + ", '" + values[3] + "');")) {
           insert.executeUpdate();
           insert.close();
         } catch (SQLException e) {
+          System.out.println("orders Insertion");
           System.out.println("SQLException: " + e.getMessage());
           System.out.println("SQLState: " + e.getSQLState());
           System.out.println("VendorError: " + e.getErrorCode());
@@ -195,13 +214,14 @@ public class SystemInter {
       Scanner inputStream = new Scanner(file);
       while (inputStream.hasNext()) {
         String data = inputStream.nextLine();
-        String[] values = data.split("|");
+        String[] values = data.split("\\|");
         int quantity = Integer.parseInt(values[2]);
         try (PreparedStatement insert = con.prepareStatement(
             "INSERT INTO ordering VALUES ('" + values[0] + "', '" + values[1] + "', " + quantity + ");")) {
           insert.executeUpdate();
           insert.close();
         } catch (SQLException e) {
+          System.out.println("ordering Insertion");
           System.out.println("SQLException: " + e.getMessage());
           System.out.println("SQLState: " + e.getSQLState());
           System.out.println("VendorError: " + e.getErrorCode());
@@ -223,12 +243,13 @@ public class SystemInter {
       Scanner inputStream = new Scanner(file);
       while (inputStream.hasNext()) {
         String data = inputStream.nextLine();
-        String[] values = data.split("|");
+        String[] values = data.split("\\|");
         try (PreparedStatement insert = con
             .prepareStatement("INSERT INTO book_author VALUES ('" + values[0] + "', '" + values[1] + "');")) {
           insert.executeUpdate();
           insert.close();
         } catch (SQLException e) {
+          System.out.println("book_author Insertion");
           System.out.println("SQLException: " + e.getMessage());
           System.out.println("SQLState: " + e.getSQLState());
           System.out.println("VendorError: " + e.getErrorCode());
