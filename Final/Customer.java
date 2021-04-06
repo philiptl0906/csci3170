@@ -11,12 +11,7 @@ import java.util.*;
 public class Customer {
     static Scanner sc = new Scanner(System.in);
 
-    public static void main(String[] args) {
-
-        run();
-    }
-
-    public static void run() {
+    public static Date run(Date sysDate) {
 
         boolean custApplicationIsRunning = true;
 
@@ -35,11 +30,11 @@ public class Customer {
                             inputIsValid = true;
                             break;
                         case 2:
-                            orderCreation();
+                            orderCreation(sysDate);
                             inputIsValid = true;
                             break;
                         case 3:
-                            orderAltering();
+                            orderAltering(sysDate);
                             inputIsValid = true;
                             break;
                         case 4:
@@ -49,7 +44,8 @@ public class Customer {
                         case 5:
                             custApplicationIsRunning = false;
                             inputIsValid = true;
-                            break;
+                            return sysDate;
+                        // break;
                         default:
                             System.err.println("INVALID INPUT");
                     }
@@ -59,6 +55,7 @@ public class Customer {
                 }
             }
         }
+        return sysDate;
     }
 
     // print menu for Customer - done
@@ -458,7 +455,7 @@ public class Customer {
     }
 
     // Creating orders
-    private static void orderCreation() {
+    private static void orderCreation(Date sysDate) {
         try {
 
             // Getting ORDER_ID (+1)
@@ -604,7 +601,7 @@ public class Customer {
                         if (!initializeOrders) {
                             String emptyOrders = String.format(
                                     "insert into orders " + "values(\"%s\",\"%s\",\"%s\",%d,\"%s\") ", order_id,
-                                    SystemInter.getSystemDate(), "N", 0, cid);
+                                    sysDate, "N", 0, cid);
                             Philip.executeUpdate(emptyOrders);
                             initializeOrders = true;
                         }
@@ -638,7 +635,7 @@ public class Customer {
 
     }
 
-    private static void orderAltering() { // Done checked and tested
+    private static void orderAltering(Date sysDate) { // Done checked and tested
         try {
             System.out.println(" Please enter the OrderID that you want to change:");
             String oid = "";
@@ -764,7 +761,7 @@ public class Customer {
                             int newCharge = extraCharge + sqlu1r.getInt("charge");
 
                             String sqluc1 = String.format("update orders " + "set charge = %d and o_date =\"%s\" "
-                                    + "where order_id = \"%s\" ", newCharge, SystemInter.getSystemDate(), oid);
+                                    + "where order_id = \"%s\" ", newCharge, sysDate, oid);
 
                             Philip.executeUpdate(sqluc1);
 
@@ -835,10 +832,8 @@ public class Customer {
                                 sqlu1r.next();
                                 int newCharge = sqlu1r.getInt("charge") - lessCharge;
 
-                                String sqluc1 = String.format(
-                                        "update orders " + "set charge = %d and o_date =\"%s\" "
-                                                + "where order_id = \"%s\" ",
-                                        newCharge, SystemInter.getSystemDate(), oid);
+                                String sqluc1 = String.format("update orders " + "set charge = %d and o_date =\"%s\" "
+                                        + "where order_id = \"%s\" ", newCharge, sysDate, oid);
 
                                 Philip.executeUpdate(sqluc1);
 

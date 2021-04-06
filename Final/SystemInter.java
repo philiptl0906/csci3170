@@ -9,16 +9,12 @@ public class SystemInter {
   static Connection con = Julianna.connect();
   static Date sysDate;
 
-  public static void main(String[] args) throws Exception {
-    run();
-  }
-
-  public static void run() throws Exception {
+  public static Date run(Date sysDate) throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    if (sysDate == null) {
-      String date1 = "2000-02-01";
-      sysDate = sdf.parse(date1);
-    }
+    // if (sysDate == null) {
+    // String date1 = "2000-02-01";
+    // sysDate = sdf.parse(date1);
+    // }
     run: while (true) {
       System.out.println("<This is the system interface.>");
       System.out.println("-------------------------------");
@@ -50,7 +46,7 @@ public class SystemInter {
             sysDate = setDate(in, sysDate);
             break;
           case 5:
-            break run;
+            return sysDate;
           default:
             System.out.println("[ERROR] Invalid input. Please input [1-5].");
             break;
@@ -354,9 +350,6 @@ public class SystemInter {
     return sysDate;
   }
 
-  public static Date getSystemDate() {
-    return sysDate;
-  }
 }
 
 class Julianna {

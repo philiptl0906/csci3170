@@ -14,7 +14,6 @@ public class Main {
             String date1 = "2000-02-01";
             sysDate = sdf.parse(date1);
         }
-        Date sysDate = sdf.parse("2000-01-01");
 
         while (applicationIsRunning) {
             printMenu(sysDate);
@@ -28,11 +27,11 @@ public class Main {
 
                     switch (userAccount) {
                         case 1:
-                            SystemInter.run();
+                            sysDate = SystemInter.run(sysDate);
                             inputIsValid = true;
                             break;
                         case 2:
-                            Customer.run();
+                            sysDate = Customer.run(sysDate);
                             inputIsValid = true;
                             break;
                         case 3:
@@ -72,6 +71,7 @@ public class Main {
         System.out.println("3. Bookstore interface");
         System.out.println("4. Show system date");
         System.out.println("5. Quit the system");
+        // System.out.println(sdf.format(sysDate) + "\n");
         System.out.print("\nPlease enter your choice??..");
     }
 }
