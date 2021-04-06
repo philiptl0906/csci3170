@@ -9,8 +9,10 @@ public class a {
   static Connection con = Julianna.connect();
   static Date sysDate;
   // static Date sysDate;
-
   public static void main(String[] args) throws Exception {
+    run();
+}
+  public static void run() throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String date1 = "2000-02-01";
     sysDate = sdf.parse(date1);
