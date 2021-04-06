@@ -175,7 +175,7 @@ public class SystemInter {
       }
       inputStream.close();
     } catch (FileNotFoundException e) {
-      System.out.println("[Error]: File not found" + e);
+      System.out.println("\n[Error]: File not found. " + e);
       success = false;
     }
 
@@ -205,7 +205,7 @@ public class SystemInter {
       }
       inputStream.close();
     } catch (FileNotFoundException e) {
-      System.out.println("[Error]: File not found" + e);
+      System.out.println("[Error]: File not found. " + e);
       success = false;
     }
 
@@ -234,7 +234,7 @@ public class SystemInter {
       }
       inputStream.close();
     } catch (FileNotFoundException e) {
-      System.out.println("[Error]: File not found" + e);
+      System.out.println("[Error]: File not found. " + e);
       success = false;
     }
 
@@ -262,7 +262,7 @@ public class SystemInter {
       }
       inputStream.close();
     } catch (FileNotFoundException e) {
-      System.out.println("[Error]: File not found" + e);
+      System.out.println("[Error]: File not found. " + e);
       success = false;
     }
 
@@ -275,8 +275,8 @@ public class SystemInter {
   private static void setDate(Scanner in, Date sysDate) throws Exception {
     System.out.print("Please Input the date (YYYYMMDD): ");
     String year = "", month = "", day = "";
+    String date = in.next();
     try {
-      String date = in.next();
       for (int i = 0; i < 4; i++) {
         year += date.charAt(i); // get the year
       }
@@ -288,6 +288,7 @@ public class SystemInter {
       }
     } catch (Exception e) {
       System.out.println("[Error]: the input should be a date");
+      return;
     }
 
     String inputDate = year + "-" + month + "-" + day;
