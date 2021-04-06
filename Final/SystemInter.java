@@ -4,7 +4,7 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class a {
+public class SystemInter {
   static Scanner in = new Scanner(System.in);
   static Connection con = Julianna.connect();
   static Date sysDate;
