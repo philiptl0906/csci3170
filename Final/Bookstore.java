@@ -243,9 +243,12 @@ public class Bookstore {
                     System.out.println("[Error]: Invalid input. Please input a positive number");
 
                 }
-                if (number > bookCounter)
-                    System.out.println("The number you picked is more than the total number of books.");
-                else if (numberCounter > 0)
+                if (number > bookCounter) {
+                    // System.out.println("The number you picked is more than the total number of
+                    // books.");
+                    number = bookCounter;
+                    break;
+                } else if (numberCounter > 0)
                     System.out.println("Please input the N popular books number: ");
                 else if (number <= 0)
                     System.out.println("Please enter a number greater than 0");
