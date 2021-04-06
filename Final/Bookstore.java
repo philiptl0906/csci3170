@@ -320,22 +320,27 @@ public class Bookstore {
 
                 // Filtering
                 while (x < number - 1 && (refNum >= countFilter)) { // Need to check this logic
+                    if ((refNum - countFilter) < 0)
+                        break;
                     if (qtyArr[refNum - countFilter] == qtyArr[refNum - countFilter + 1]) { // in original array - same
                                                                                             // as previous?
                         qtyArrFilter[countFilter] = qtyArr[refNum - countFilter];
                         isbnArrFilter[countFilter] = isbnArr[refNum - countFilter];
                         // System.out.println("Pass system 1");
-                        if (!(qtyArr[refNum - countFilter] == qtyArr[refNum - countFilter - 1]))
-                            x++;
+                        if (!((refNum - countFilter) == 0)) {
+                            if (!(qtyArr[refNum - countFilter] == qtyArr[refNum - countFilter - 1]))
+                                x++;
+                        }
                         countFilter++;
                     } else if (!((refNum - countFilter) == 0)) { // is it the end?
                         if (qtyArr[refNum - countFilter] == qtyArr[refNum - countFilter - 1]) { // in original array -
-                                                                                                // same as next?
+                                                                                                // same as next? - Not
+                                                                                                // the end
                             qtyArrFilter[countFilter] = qtyArr[refNum - countFilter];
                             isbnArrFilter[countFilter] = isbnArr[refNum - countFilter];
                             countFilter++;
                             // System.out.println("Pass system 2");
-                        } else {
+                        } else { // not same as next ,not end.
                             qtyArrFilter[countFilter] = qtyArr[refNum - countFilter];
                             isbnArrFilter[countFilter] = isbnArr[refNum - countFilter];
                             countFilter++;
