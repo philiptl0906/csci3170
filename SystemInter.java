@@ -175,7 +175,7 @@ public class SystemInter {
       }
       inputStream.close();
     } catch (FileNotFoundException e) {
-      System.out.println("\n[Error]: File not found. " + e);
+      System.out.println("[Error]: File not found. " + e);
       success = false;
     }
 
