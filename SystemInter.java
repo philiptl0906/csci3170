@@ -8,6 +8,7 @@ public class SystemInter {
   static Scanner in = new Scanner(System.in);
   static Connection con = Julianna.connect();
   static Date sysDate;
+  // static Date sysDate;
 
   public static void main(String[] args) throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -272,8 +273,8 @@ public class SystemInter {
     con.close();
   }
 
-  // **** doing ******
   private static void setDate(Scanner in, Date sysDate) throws Exception {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     System.out.print("Please Input the date (YYYYMMDD): ");
     String year = "", month = "", day = "";
     String date = in.next();
@@ -300,10 +301,18 @@ public class SystemInter {
       stmt = con.createStatement();
       rs = stmt.executeQuery("SELECT MAX(o_date) AS o_date FROM orders;");
       rs.next();
-
+      System.out.println("System Date: " + sdf.format(sysDate));
       String order_date = (rs.getString("o_date"));
-      System.out.println("Latest date in orders: " + order_date);
-      sysDate = rs.getDate("o_date"); // update the system date, if there is order made in the lastest "order date"
+      if (order_date == null) {
+        System.out.println("No order record yet. No latest date in orders");
+      } else {
+        System.out.println("Latest date in orders: " + order_date);
+        Date order_dateF = rs.getDate("o_date"); // order date with Date type, to compare with the system date
+
+        if (order_dateF.compareTo(sysDate) > 0)
+          sysDate = rs.getDate("o_date"); // update the system date, if there is order made in the lastest "order date"
+
+      }
 
     } catch (SQLException e) {
       System.out.println("SQLException: " + e.getMessage());
@@ -326,13 +335,13 @@ public class SystemInter {
         stmt = null;
       }
     }
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
     Date newDate = sdf.parse(inputDate);
     int compare_result = newDate.compareTo(sysDate);
     // check the input date is later than the latest date or not
     if (compare_result > 0) {
       sysDate = newDate; // the newest date used in the system
-      System.out.println("Today is " + sdf.format(newDate));
+      System.out.println("Today is " + sdf.format(sysDate));
     } else {
       System.out.println("[Error]: The date is not later than the lastest date in orders");
     }
