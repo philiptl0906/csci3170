@@ -7,11 +7,12 @@ import java.util.Date;
 public class SystemInter {
   static Scanner in = new Scanner(System.in);
   static Connection con = Julianna.connect();
+  static Date sysDate;
 
   public static void main(String[] args) throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String date1 = "2000-02-01";
-    Date sysDate = sdf.parse(date1);
+    sysDate = sdf.parse(date1);
     // System.out.println(sdf.format(sysDate));
     run: while (true) {
       System.out.println("<This is the system interface.>");
