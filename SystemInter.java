@@ -10,7 +10,7 @@ public class SystemInter {
 
   public static void main(String[] args) throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String date1 = "2019-02-01";
+    String date1 = "2000-02-01";
     Date sysDate = sdf.parse(date1);
     // System.out.println(sdf.format(sysDate));
     run: while (true) {
