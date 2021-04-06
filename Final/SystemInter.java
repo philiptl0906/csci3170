@@ -9,33 +9,16 @@ public class SystemInter {
   static Connection con = Julianna.connect();
   static Date sysDate;
 
-  // static Date sysDate;
   public static void main(String[] args) throws Exception {
     run();
   }
 
   public static void run() throws Exception {
-    // String systemDate = String.format("select * " + "from orders " + "order by
-    // o_date ");
-    // List<Date> allDate = new ArrayList<Date>();
-    // Connection con = Julianna.connect();
-    // Statement stmt = con.createStatement();
-    // ResultSet systemDate1 = stmt.executeQuery(systemDate);
-    // if (!systemDate1.isBeforeFirst())
-    // System.out.println("There are no record in the order table ");
-    // while (systemDate1.next()) {
-    // allDate.add(systemDate1.getDate("o_date"));
-    // }
-    // systemDate1.next();
-    // Date dateResult = Collections.max(allDate);
-    // if (dateResult.compareTo(sysDate) > 0) {
-    // sysDate = Collections.max(allDate);
-    // }
-    // System.out.println(sysDate);
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String date1 = "2000-02-01";
-    sysDate = sdf.parse(date1);
-    System.out.println(sdf.format(sysDate));
+    if (sysDate == null) {
+      String date1 = "2000-02-01";
+      sysDate = sdf.parse(date1);
+    }
     run: while (true) {
       System.out.println("<This is the system interface.>");
       System.out.println("-------------------------------");
@@ -44,6 +27,7 @@ public class SystemInter {
       System.out.println("3. Insert Data.");
       System.out.println("4. Set System Date.");
       System.out.println("5. Back to main menu.\n");
+      System.out.println(sdf.format(sysDate) + "\n");
       System.out.print("Please enter your choice??..");
 
       int input = 0;
@@ -63,7 +47,7 @@ public class SystemInter {
             insertData(in);
             break;
           case 4:
-            setDate(in, sysDate);
+            sysDate = setDate(in, sysDate);
             break;
           case 5:
             break run;
@@ -294,7 +278,7 @@ public class SystemInter {
     con.close();
   }
 
-  private static void setDate(Scanner in, Date sysDate) throws Exception {
+  private static Date setDate(Scanner in, Date sysDate) throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     System.out.print("Please Input the date (YYYYMMDD): ");
     String year = "", month = "", day = "";
@@ -311,7 +295,7 @@ public class SystemInter {
       }
     } catch (Exception e) {
       System.out.println("[Error]: the input should be a date");
-      return;
+      return sysDate;
     }
 
     String inputDate = year + "-" + month + "-" + day;
@@ -367,6 +351,7 @@ public class SystemInter {
       System.out.println("[Error]: The date is not later than the lastest date in orders");
     }
     con.close();
+    return sysDate;
   }
 
   public static Date getSystemDate() {

@@ -4,10 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Main {
+    static Date sysDate;
+
     public static void main(String[] args) throws Exception {
         boolean applicationIsRunning = true;
         Scanner scanner = new Scanner(System.in);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if (sysDate == null) {
+            String date1 = "2000-02-01";
+            sysDate = sdf.parse(date1);
+        }
         Date sysDate = sdf.parse("2000-01-01");
 
         while (applicationIsRunning) {
