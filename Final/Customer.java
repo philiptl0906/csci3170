@@ -21,8 +21,13 @@ public class Customer {
             boolean inputIsValid = false;
 
             while (!inputIsValid) {
+                int custAction = 0;
                 try {
-                    int custAction = sc.nextInt();
+                    custAction = sc.nextInt();
+                } catch (Exception err) {
+                    System.err.println("INVALID INPUT");
+                    sc.next();
+                } finally {
 
                     switch (custAction) {
                         case 1:
@@ -49,11 +54,9 @@ public class Customer {
                         default:
                             System.err.println("INVALID INPUT");
                     }
-                } catch (Exception err) {
-                    System.err.println("INVALID INPUT");
-                    sc.next();
                 }
             }
+
         }
         return sysDate;
     }
@@ -502,8 +505,12 @@ public class Customer {
             System.out.println("You can press \"L\" to see ordered list, or \"F\" to finish ordering.");
             Boolean initializeOrders = false;
             // Loop for ISBN
+            System.out.println("Please enter the book's ISBN:");
+            int loopCounter = 0;
             while (!loop) {
-                System.out.println("Please enter the book's ISBN:");
+                if (loopCounter > 1) {
+                    System.out.println("Please enter the book's ISBN:");
+                }
                 isbn = sc.nextLine();
                 isbn = String.valueOf(isbn);
                 // System.out.println(isbn);
@@ -593,7 +600,7 @@ public class Customer {
                     ResultSet r2 = Philip.executeQuery(sql2);
                     r2.next();
                     copies = r2.getInt("no_of_copies");
-
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     // The checking part
                     if (copies >= qty) {
                         // Step 1: Create empty data in orders
@@ -601,7 +608,7 @@ public class Customer {
                         if (!initializeOrders) {
                             String emptyOrders = String.format(
                                     "insert into orders " + "values(\"%s\",\"%s\",\"%s\",%d,\"%s\") ", order_id,
-                                    sysDate, "N", 0, cid);
+                                    sdf.format(sysDate), "N", 0, cid);
                             Philip.executeUpdate(emptyOrders);
                             initializeOrders = true;
                         }
@@ -628,6 +635,7 @@ public class Customer {
                         System.out.println("Quantity ordered exceed number of available quantity");
                     }
                 }
+                loopCounter++;
             }
         } catch (Exception err) {
             System.err.println(err);
@@ -759,13 +767,15 @@ public class Customer {
                             ResultSet sqlu1r = Philip.executeQuery(sqlu1);
                             sqlu1r.next();
                             int newCharge = extraCharge + sqlu1r.getInt("charge");
-
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                             String sqluc1 = String.format("update orders " + "set charge = %d and o_date =\"%s\" "
-                                    + "where order_id = \"%s\" ", newCharge, sysDate, oid);
-
-                            Philip.executeUpdate(sqluc1);
-
-                            System.out.println("Updated Charge");
+                                    + "where order_id = \"%s\" ", newCharge, sdf.format(sysDate), oid);
+                            try {
+                                Philip.executeUpdate(sqluc1);
+                                System.out.println("Updated Charge");
+                            } catch (Exception e) {
+                                System.out.println(e);
+                            }
 
                         } else {
                             if (nocst.getInt("no_of_copies") < addCopies)
@@ -778,7 +788,13 @@ public class Customer {
                     // remove
                     if (decision.equals("remove")) {
                         System.out.println("Input the number:");
-                        int deleteCopies = sc.nextInt();
+                        String numDelete = sc.next();
+                        int deleteCopies = 0;
+                        try {
+                            deleteCopies = sc.nextInt();
+                        } catch (Exception e) {
+                            System.out.println("[Error]: Invalid input");
+                        }
 
                         // get the quantity in the orders.
                         String deleteQty = String.format(
@@ -831,9 +847,9 @@ public class Customer {
                                 ResultSet sqlu1r = Philip.executeQuery(sqlu1);
                                 sqlu1r.next();
                                 int newCharge = sqlu1r.getInt("charge") - lessCharge;
-
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                                 String sqluc1 = String.format("update orders " + "set charge = %d and o_date =\"%s\" "
-                                        + "where order_id = \"%s\" ", newCharge, sysDate, oid);
+                                        + "where order_id = \"%s\" ", newCharge, sdf.format(sysDate), oid);
 
                                 Philip.executeUpdate(sqluc1);
 

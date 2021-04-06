@@ -23,7 +23,7 @@ public class SystemInter {
       System.out.println("3. Insert Data.");
       System.out.println("4. Set System Date.");
       System.out.println("5. Back to main menu.\n");
-      System.out.println(sdf.format(sysDate) + "\n");
+      // System.out.println(sdf.format(sysDate) + "\n");
       System.out.print("Please enter your choice??..");
 
       int input = 0;
