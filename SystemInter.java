@@ -136,7 +136,7 @@ public class SystemInter {
           insert.executeUpdate();
           insert.close();
         } catch (SQLException e) {
-          System.out.println("Book Insertion");
+          System.out.println("[Error]: Book Insertion");
           System.out.println("SQLException: " + e.getMessage());
           System.out.println("SQLState: " + e.getSQLState());
           System.out.println("VendorError: " + e.getErrorCode());
@@ -147,7 +147,7 @@ public class SystemInter {
       }
       inputStream.close();
     } catch (FileNotFoundException e) {
-      System.out.println(e);
+      System.out.println("[Error]: File not found" + e);
       success = false;
     }
 
@@ -163,7 +163,7 @@ public class SystemInter {
           insert.executeUpdate();
           insert.close();
         } catch (SQLException e) {
-          System.out.println("customer Insertion");
+          System.out.println("[Error]: customer Insertion");
           System.out.println("SQLException: " + e.getMessage());
           System.out.println("SQLState: " + e.getSQLState());
           System.out.println("VendorError: " + e.getErrorCode());
@@ -175,7 +175,7 @@ public class SystemInter {
       }
       inputStream.close();
     } catch (FileNotFoundException e) {
-      System.out.println(e);
+      System.out.println("[Error]: File not found" + e);
       success = false;
     }
 
@@ -193,7 +193,7 @@ public class SystemInter {
           insert.executeUpdate();
           insert.close();
         } catch (SQLException e) {
-          System.out.println("orders Insertion");
+          System.out.println("[Error]: orders Insertion");
           System.out.println("SQLException: " + e.getMessage());
           System.out.println("SQLState: " + e.getSQLState());
           System.out.println("VendorError: " + e.getErrorCode());
@@ -205,7 +205,7 @@ public class SystemInter {
       }
       inputStream.close();
     } catch (FileNotFoundException e) {
-      System.out.println(e);
+      System.out.println("[Error]: File not found" + e);
       success = false;
     }
 
@@ -222,7 +222,7 @@ public class SystemInter {
           insert.executeUpdate();
           insert.close();
         } catch (SQLException e) {
-          System.out.println("ordering Insertion");
+          System.out.println("[Error]: ordering Insertion");
           System.out.println("SQLException: " + e.getMessage());
           System.out.println("SQLState: " + e.getSQLState());
           System.out.println("VendorError: " + e.getErrorCode());
@@ -234,7 +234,7 @@ public class SystemInter {
       }
       inputStream.close();
     } catch (FileNotFoundException e) {
-      System.out.println(e);
+      System.out.println("[Error]: File not found" + e);
       success = false;
     }
 
@@ -250,7 +250,7 @@ public class SystemInter {
           insert.executeUpdate();
           insert.close();
         } catch (SQLException e) {
-          System.out.println("book_author Insertion");
+          System.out.println("[Error]: book_author Insertion");
           System.out.println("SQLException: " + e.getMessage());
           System.out.println("SQLState: " + e.getSQLState());
           System.out.println("VendorError: " + e.getErrorCode());
@@ -262,7 +262,7 @@ public class SystemInter {
       }
       inputStream.close();
     } catch (FileNotFoundException e) {
-      System.out.println(e);
+      System.out.println("[Error]: File not found" + e);
       success = false;
     }
 
@@ -274,17 +274,22 @@ public class SystemInter {
   // **** doing ******
   private static void setDate(Scanner in, Date sysDate) throws Exception {
     System.out.print("Please Input the date (YYYYMMDD): ");
-    String date = in.next();
     String year = "", month = "", day = "";
-    for (int i = 0; i < 4; i++) {
-      year += date.charAt(i); // get the year
+    try {
+      String date = in.next();
+      for (int i = 0; i < 4; i++) {
+        year += date.charAt(i); // get the year
+      }
+      for (int i = 4; i < 6; i++) {
+        month += date.charAt(i); // get the month
+      }
+      for (int i = 6; i < 8; i++) {
+        day += date.charAt(i); // get the day
+      }
+    } catch (Exception e) {
+      System.out.println("[Error]: the input should be a date");
     }
-    for (int i = 4; i < 6; i++) {
-      month += date.charAt(i); // get the month
-    }
-    for (int i = 6; i < 8; i++) {
-      day += date.charAt(i); // get the day
-    }
+
     String inputDate = year + "-" + month + "-" + day;
     Connection con = Julianna.connect();
     Statement stmt = null;
