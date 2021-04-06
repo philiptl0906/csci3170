@@ -66,7 +66,7 @@ public class Main {
         System.out.println("3. Bookstore interface");
         System.out.println("4. Show system date");
         System.out.println("5. Quit the system");
-        System.out.print("\nPlease enter your choie??..");
+        System.out.print("\nPlease enter your choice??..");
     }
 }
 

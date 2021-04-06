@@ -26,7 +26,10 @@ public class SystemInter {
       allDate.add(systemDate1.getDate("o_date"));
     }
     systemDate1.next();
-    sysDate = Collections.max(allDate);
+    Date dateResult = Collections.max(allDate);
+    if (dateResult.compareTo(sysDate) > 0) {
+      sysDate = Collections.max(allDate);
+    }
     System.out.println(sysDate);
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     // String date1 = "2000-02-01";
