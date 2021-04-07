@@ -200,7 +200,7 @@ public class Customer {
             int countex = 0;
             while (!listingAllISBN(isbncharacter)) {
                 isbncharacter = sc.nextLine();
-                if (countex != 0 && !listingAllISBN(isbncharacter)){
+                if (countex != 0 && !listingAllISBN(isbncharacter)) {
                     System.out.println("Invalid input");
                     System.out.println("Please input the correct ISBN:");
                 }
@@ -507,11 +507,11 @@ public class Customer {
             System.out.println("You can press \"L\" to see ordered list, or \"F\" to finish ordering.");
             Boolean initializeOrders = false;
             // Loop for ISBN
-            System.out.println("Please enter the book's ISBN:");
+            System.out.print("Please enter the book's ISBN: ");
             int loopCounter = 0;
             while (!loop) {
-                if (loopCounter > 1) {
-                    System.out.println("Please enter the book's ISBN:");
+                if (loopCounter >= 1) {
+                    System.out.print("Please enter the book's ISBN: ");
                 }
                 isbn = sc.nextLine();
                 isbn = String.valueOf(isbn);
@@ -532,7 +532,8 @@ public class Customer {
 
                     ResultSet stres = Philip.executeQuery(show);
                     if (!stres.isBeforeFirst()) {
-                        System.out.println("No orders of this Order_id"); // this order_id still has no orderings yet
+                        // System.out.println("No orders of this Order_id"); // this order_id still has
+                        // no orderings yet
                     } else {
                         while (stres.next()) {
                             System.out.println(stres.getString("ISBN") + "  " + stres.getInt("quantity"));
@@ -590,7 +591,7 @@ public class Customer {
                 if (isbnList.contains(isbn)) {
 
                     // Prompt for quantity
-                    System.out.println("Please enter the quantity of the order: ");
+                    System.out.print("Please enter the quantity of the order: ");
                     int qty = sc.nextInt();
 
                     int copies = 0; // this is used to check for no.of available copies
@@ -631,14 +632,14 @@ public class Customer {
                         String sqlUp = String.format("update book " + "set no_of_copies= %d " + "where ISBN =\"%s\" ",
                                 aa1 - qty, isbn);
                         Philip.executeUpdate(sqlUp);
-                        System.out.println("Updated no.of copies");
+                        // System.out.println("Updated no.of copies");
                     } else {
                         System.out.println("Quantity ordered exceed number of available quantity");
                     }
                 }
                 loopCounter++;
             }
-            loopCounter = 0 ;
+            loopCounter = 0;
         } catch (Exception err) {
             System.err.println(err);
         }
@@ -705,7 +706,7 @@ public class Customer {
                             System.out.println("[Error]: Invalid input. Please input a positive number");
                             continue;
                         }
-                        if (number <= counter - 1 && number!= 0)
+                        if (number <= counter - 1 && number != 0)
                             inputValid = true;
                     }
 
