@@ -72,7 +72,7 @@ public class Bookstore {
                             try {
                                 upstmt = con.createStatement();
                                 upstmt.executeUpdate(upsql);
-                                System.out.print("Update shiping status");
+                                System.out.println("Update shiping status");
                             } catch (SQLException e) {
                                 System.out.println("SQLException: " + e.getMessage());
                                 System.out.println("SQLState: " + e.getSQLState());
@@ -406,20 +406,20 @@ public class Bookstore {
 
             finally {
                 switch (input) {
-                    case 1:
-                        OrUpdate();
-                        break;
-                    case 2:
-                        OrQuery();
-                        break;
-                    case 3:
-                        Npop(in);
-                        break;
-                    case 4:
-                        break run;
-                    default:
-                        System.out.println("Invaild choice.");
-                        break;
+                case 1:
+                    OrUpdate();
+                    break;
+                case 2:
+                    OrQuery();
+                    break;
+                case 3:
+                    Npop(in);
+                    break;
+                case 4:
+                    break run;
+                default:
+                    System.out.println("Invaild choice.");
+                    break;
                 }
             }
         }
