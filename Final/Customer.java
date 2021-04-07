@@ -593,20 +593,20 @@ public class Customer {
                     // Prompt for quantity
                     int qty = -1;
                     System.out.print("Please enter the quantity of the order: ");
-                    while(!inputQtyValid){
+                    while (!inputQtyValid) {
                         String qty1 = sc.next();
-                            try {
-                                qty = Integer.parseInt(qty1);
-                            } catch (Exception e) {
-                                System.out.println("[Error]: Invalid input. Please input a number");
+                        try {
+                            qty = Integer.parseInt(qty1);
+                        } catch (Exception e) {
+                            System.out.println("[Error]: Invalid input. Please input a number");
                         }
-                        if (qty>0) {
+                        if (qty > 0) {
                             inputQtyValid = true;
-                        }
-                        else System.out.println("Please input a number greater than 0");
+                        } else
+                            System.out.println("Please input a number greater than 0");
 
                     }
-                    
+
                     int copies = 0; // this is used to check for no.of available copies
 
                     // check if qty is available
@@ -740,21 +740,19 @@ public class Customer {
                         // Prompt for quantity
                         int addCopies = -1;
                         System.out.println("How many copies do you want to add?");
-                        while(!inputQtyValid){
+                        while (!inputQtyValid) {
                             String addCopies1 = sc.next();
-                                try {
-                                    addCopies = Integer.parseInt(addCopies1);
-                                } catch (Exception e) {
-                                    System.out.println("[Error]: Invalid input. Please input a number");
+                            try {
+                                addCopies = Integer.parseInt(addCopies1);
+                            } catch (Exception e) {
+                                System.out.println("[Error]: Invalid input. Please input a number");
                             }
-                            if (addCopies>0) {
+                            if (addCopies > 0) {
                                 inputQtyValid = true;
-                            }
-                            else System.out.println("Please input a number greater than 0");
+                            } else
+                                System.out.println("Please input a number greater than 0");
 
                         }
-                        
-                        
 
                         // get the ISBN of the number.
                         String noc = String.format("select * " + "from book " + "where ISBN = \"%s\" ", array[number]);
@@ -823,20 +821,19 @@ public class Customer {
                         // Prompt for quantity
                         int deleteCopies = -1;
                         System.out.println("How many copies do you want to delete?");
-                        while(!inputQtyValid){
+                        while (!inputQtyValid) {
                             String deleteCopies1 = sc.next();
-                                try {
-                                    deleteCopies = Integer.parseInt(deleteCopies1);
-                                } catch (Exception e) {
-                                    System.out.println("[Error]: Invalid input. Please input a number");
+                            try {
+                                deleteCopies = Integer.parseInt(deleteCopies1);
+                            } catch (Exception e) {
+                                System.out.println("[Error]: Invalid input. Please input a number");
                             }
-                            if (deleteCopies>0) {
+                            if (deleteCopies > 0) {
                                 inputQtyValid = true;
-                            }
-                            else System.out.println("Please input a number greater than 0");
+                            } else
+                                System.out.println("Please input a number greater than 0");
 
                         }
-                        
 
                         // get the quantity in the orders.
                         String deleteQty = String.format(
