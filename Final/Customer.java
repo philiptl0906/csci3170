@@ -202,7 +202,7 @@ public class Customer {
                 isbncharacter = sc.nextLine();
                 if (countex != 0 && !listingAllISBN(isbncharacter)){
                     System.out.println("Invalid input");
-                    System.out.println("Please input the correct ISBN:")
+                    System.out.println("Please input the correct ISBN:");
                 }
                 countex++;
             }
