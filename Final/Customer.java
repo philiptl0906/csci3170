@@ -200,8 +200,10 @@ public class Customer {
             int countex = 0;
             while (!listingAllISBN(isbncharacter)) {
                 isbncharacter = sc.nextLine();
-                if (countex != 0 && !listingAllISBN(isbncharacter))
+                if (countex != 0 && !listingAllISBN(isbncharacter)){
                     System.out.println("Invalid input");
+                    System.out.println("Please input the correct ISBN:")
+                }
                 countex++;
             }
             String mysqlStatement = String.format(
@@ -522,8 +524,8 @@ public class Customer {
 
                 // case 1 - L
                 if (isbn.equals(string1) || isbn.equals(string2)) {
-                    // System.out.println("Went through L");
-
+                    // UI Basic deisgn
+                    System.out.println("ISBN            Number:");
                     // show the existing order
                     String show = String.format("select ISBN, quantity " + "from ordering " + "where order_id =\"%s\" ",
                             order_id);
@@ -532,7 +534,6 @@ public class Customer {
                     if (!stres.isBeforeFirst()) {
                         System.out.println("No orders of this Order_id"); // this order_id still has no orderings yet
                     } else {
-                        System.out.println("ISBN            Number:");
                         while (stres.next()) {
                             System.out.println(stres.getString("ISBN") + "  " + stres.getInt("quantity"));
                         }
@@ -637,6 +638,7 @@ public class Customer {
                 }
                 loopCounter++;
             }
+            loopCounter = 0 ;
         } catch (Exception err) {
             System.err.println(err);
         }
@@ -703,7 +705,7 @@ public class Customer {
                             System.out.println("[Error]: Invalid input. Please input a positive number");
                             continue;
                         }
-                        if (number <= counter - 1)
+                        if (number <= counter - 1 && number!= 0)
                             inputValid = true;
                     }
 
@@ -714,7 +716,7 @@ public class Customer {
                     while (!(decision.equals("add") || decision.equals("remove"))) {
                         decision = sc.nextLine();
                         if (counterDecision != 0)
-                            System.out.println("Please input add or remove: ");
+                            System.out.println("Invalid input. Please input add or remove: ");
                         counterDecision++;
                     }
 
