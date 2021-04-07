@@ -507,12 +507,11 @@ public class Customer {
             System.out.println("You can press \"L\" to see ordered list, or \"F\" to finish ordering.");
             Boolean initializeOrders = false;
             // Loop for ISBN
-            System.out.print("Please enter the book's ISBN: ");
-            int loopCounter = 0;
+            
+            
             while (!loop) {
-                if (loopCounter >= 1) {
-                    System.out.print("Please enter the book's ISBN: ");
-                }
+                System.out.print("Please enter the book's ISBN: ");
+                
                 isbn = sc.nextLine();
                 isbn = String.valueOf(isbn);
                 // System.out.println(isbn);
@@ -650,9 +649,9 @@ public class Customer {
                         System.out.println("Quantity ordered exceed number of available quantity");
                     }
                 }
-                loopCounter++;
+                
             }
-            loopCounter = 0;
+            
         } catch (Exception err) {
             System.err.println(err);
         }
