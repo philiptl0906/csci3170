@@ -729,7 +729,7 @@ public class Customer {
                     while (!(decision.equals("add") || decision.equals("remove"))) {
                         decision = sc.nextLine();
                         if (counterDecision != 0)
-                            System.out.println("Invalid input. Please input add or remove: ");
+                            System.out.println("Please input add or remove: ");
                         counterDecision++;
                     }
 
