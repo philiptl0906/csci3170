@@ -547,7 +547,7 @@ public class Customer {
 
                     ResultSet stres = Philip.executeQuery(show);
                     if (!stres.isBeforeFirst()) {
-                        continue; // this order_id
+                        break; // this order_id
                                                                                                       // still has no
                                                                                                       // orderings yet
                     } else {
