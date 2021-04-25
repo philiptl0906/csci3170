@@ -533,7 +533,7 @@ public class Customer {
                 Statement showSt = con.createStatement();
                 ResultSet stres = showSt.executeQuery(show);
                 if(!stres.isBeforeFirst()){
-                    System.out.println("Please insert a book first before finishing the order."); // this order_id still has no orderings yet
+                    continue; // this order_id still has no orderings yet
                 }else {
                 // System.out.println("Went through F");
                 int countPurchase = 0; //No of copies of all book ordered
