@@ -547,7 +547,7 @@ public class Customer {
 
                     ResultSet stres = Philip.executeQuery(show);
                     if (!stres.isBeforeFirst()) {
-                        System.out.println("Please insert a book first before finishing the order."); // this order_id
+                        continue; // this order_id
                                                                                                       // still has no
                                                                                                       // orderings yet
                     } else {
