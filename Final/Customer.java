@@ -725,12 +725,16 @@ public class Customer {
                     // Decision UI
                     String decision = "";
                     int counterDecision = 0;
-                    System.out.println("input add or remove");
+                    System.out.println("input add or remove else exit");
                     while (!(decision.equals("add") || decision.equals("remove"))) {
                         decision = sc.nextLine();
                         if (counterDecision != 0)
                             System.out.println("Please input add or remove: ");
                         counterDecision++;
+                        if(decision.equals("exit")){
+                          System.out.println("Exiting");        
+                           break;
+                                           }
                     }
 
                     if (decision.equals("add")) {
