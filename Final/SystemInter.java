@@ -132,12 +132,17 @@ public class SystemInter {
       while (inputStream.hasNext()) {
         String data = inputStream.nextLine();
         String[] values = data.split("\\|");
+        String insert = "INSERT INTO book VALUES (?, ?, ?, ?);";
+        PreparedStatement statement = con.prepareStatement(insert);
+        statement.setString(1, values[0]);
+        statement.setString(2, values[1]);
         int unit_price = Integer.parseInt(values[2]);
         int no_of_copies = Integer.parseInt(values[3]);
-        try (PreparedStatement insert = con.prepareStatement("INSERT INTO book VALUES ('" + values[0] + "', '"
-            + values[1] + "', " + unit_price + "," + no_of_copies + ");")) {
-          insert.executeUpdate();
-          insert.close();
+        statement.setInt(3, unit_price);
+        statement.setInt(4, no_of_copies);
+        try {
+          statement.executeUpdate();
+          statement.close();
         } catch (SQLException e) {
           System.out.println("[Error]: Book Insertion");
           System.out.println("SQLException: " + e.getMessage());
@@ -161,10 +166,15 @@ public class SystemInter {
       while (inputStream.hasNext()) {
         String data = inputStream.nextLine();
         String[] values = data.split("\\|");
-        try (PreparedStatement insert = con.prepareStatement("INSERT INTO customer VALUES ('" + values[0] + "', '"
-            + values[1] + "', '" + values[2] + "', '" + values[3] + "');")) {
-          insert.executeUpdate();
-          insert.close();
+        String insert = "INSERT INTO customer VALUES (?, ?,?,?);";
+        PreparedStatement statement = con.prepareStatement(insert);
+        statement.setString(1, values[0]);
+        statement.setString(2, values[1]);
+        statement.setString(3, values[2]);
+        statement.setString(4, values[3]);
+        try {
+          statement.executeUpdate();
+          statement.close();
         } catch (SQLException e) {
           System.out.println("[Error]: customer Insertion");
           System.out.println("SQLException: " + e.getMessage());
